@@ -1,0 +1,129 @@
+// ==========================================================================
+// Dress code
+// ==========================================================================
+
+@use "variables" as *;
+
+.dresscode__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 4vw, 3rem);
+}
+
+.dresscode-card {
+  position: relative;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  padding: 2px;
+  background: linear-gradient(160deg, rgba($color-secondary-light, 0.5), rgba($color-primary, 0.15));
+}
+
+.dresscode-card__inner {
+  position: relative;
+  border-radius: calc(#{$radius-lg} - 2px);
+  overflow: hidden;
+  background: $color-dark-deep;
+}
+
+.dresscode-card__figure {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.dresscode-card__figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12);
+  transition: transform 1.1s $ease-cinematic;
+}
+
+.dresscode-card.is-visible .dresscode-card__figure img {
+  transform: scale(1);
+}
+
+.dresscode-card__figure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba($color-dark-deep, 0) 45%, rgba($color-dark-deep, 0.95) 100%);
+}
+
+.dresscode-card__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: $space-md;
+  text-align: center;
+}
+
+.dresscode-card__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: $color-secondary-light;
+}
+
+.dresscode-card__title {
+  margin-top: 0.3em;
+  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+}
+
+.dresscode-card__note {
+  margin-top: 0.5em;
+  font-size: 0.85rem;
+  color: $text-on-dark-muted;
+}
+
+.dresscode-card--girls {
+  transform: translate3d(-40px, 0, 0);
+  opacity: 0;
+  transition: opacity $duration-base $ease-cinematic, transform $duration-base $ease-cinematic;
+}
+
+.dresscode-card--boys {
+  transform: translate3d(40px, 0, 0);
+  opacity: 0;
+  transition: opacity $duration-base $ease-cinematic, transform $duration-base $ease-cinematic;
+}
+
+.dresscode-card.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.dresscode__palette {
+  margin-top: $space-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-sm;
+  flex-wrap: wrap;
+}
+
+.dresscode__swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba($color-cream, 0.35);
+}
+
+@media (max-width: $bp-tablet) {
+  .dresscode__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dresscode-card--girls,
+  .dresscode-card--boys {
+    transform: translate3d(0, 24px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dresscode-card--girls,
+  .dresscode-card--boys {
+    transform: none;
+  }
+}

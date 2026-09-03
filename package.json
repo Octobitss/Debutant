@@ -1,0 +1,37 @@
+{
+  "name": "trinas-xviii",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Trina's XVIII — Wildest Dreams. An interactive, cinematic debut invitation website.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "placeholders": "node scripts/generate-placeholders.mjs",
+    "gulp:build": "gulp build",
+    "gulp:watch": "gulp watch"
+  },
+  "devDependencies": {
+    "del": "^7.1.0",
+    "gulp": "^5.0.0",
+    "gulp-autoprefixer": "^9.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.1.4",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.77.8",
+    "sharp": "^0.33.5",
+    "esbuild": "^0.23.1",
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "three": "^0.169.0"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.6.0": true,
+    "esbuild@0.23.1": true,
+    "esbuild@0.21.5": true,
+    "sharp@0.33.5": true
+  }
+}

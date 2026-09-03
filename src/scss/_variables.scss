@@ -1,0 +1,82 @@
+// ==========================================================================
+// Design tokens — Trina's XVIII
+// ==========================================================================
+
+// Core palette (do not introduce colors outside this system)
+$color-primary: #925a5d; // dusty rose
+$color-secondary: #cc96bb; // muted orchid pink
+$color-dark: #4e3b4a; // deep plum
+
+// Derived tones
+$color-primary-light: #b98588;
+$color-primary-dark: #6f4245;
+$color-secondary-light: #e3bfd8;
+$color-secondary-dark: #a3729a;
+$color-dark-light: #6b5264;
+$color-dark-deep: #362a34;
+
+$color-blush: #f3e4e8;
+$color-cream: #f8ece7;
+$color-gold: #cdb08a;
+$color-gold-soft: #e4d3ad;
+
+$color-ink: #2a1f27;
+$color-paper: #f6ece7;
+
+// Text colors on dark grounds
+$text-on-dark: rgba(#f8ece7, 0.92);
+$text-on-dark-muted: rgba(#f3e4e8, 0.68);
+$text-on-light: $color-dark-deep;
+
+// Gradients
+$gradient-twilight: linear-gradient(180deg, #2c2030 0%, #4e3b4a 45%, #6f4a5c 100%);
+$gradient-rose: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+$gradient-veil: linear-gradient(180deg, rgba($color-dark, 0.92) 0%, rgba($color-primary-dark, 0.85) 100%);
+$gradient-glow: radial-gradient(circle at 50% 30%, rgba($color-secondary, 0.35), rgba($color-dark, 0) 70%);
+
+// Typography
+$font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+$font-script: "Cormorant Garamond", serif;
+$font-body: "Jost", "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+
+$fs-hero-title: clamp(3.4rem, 11vw, 8rem);
+$fs-hero-subtitle: clamp(1.4rem, 4.4vw, 2.8rem);
+$fs-hero-tagline: clamp(0.72rem, 1.8vw, 1rem);
+$fs-section-title: clamp(2rem, 5.5vw, 3.6rem);
+$fs-body: clamp(0.95rem, 1.4vw, 1.08rem);
+
+// Spacing
+$space-xs: 0.5rem;
+$space-sm: 1rem;
+$space-md: 2rem;
+$space-lg: 4rem;
+$space-xl: 7rem;
+$space-2xl: 11rem;
+
+// Layout
+$max-width: 1280px;
+$radius-sm: 6px;
+$radius-md: 14px;
+$radius-lg: 28px;
+
+// Motion
+$ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-soft: cubic-bezier(0.16, 0.84, 0.44, 1);
+$ease-out-strong: cubic-bezier(0.19, 1, 0.22, 1);
+$duration-fast: 0.4s;
+$duration-base: 0.9s;
+$duration-slow: 1.6s;
+
+// Z-index scale
+$z-bg-canvas: 1;
+$z-content: 10;
+$z-nav: 40;
+$z-loading: 90;
+$z-entrance: 100;
+
+// Breakpoints
+$bp-xs: 375px;
+$bp-sm: 414px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+$bp-wide: 1440px;
