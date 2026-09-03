@@ -13,6 +13,15 @@
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
+  overflow-x: hidden;
+  // Hide the native scrollbar for a clean, full-bleed cinematic frame —
+  // vertical scrolling stays fully functional via wheel/touch/keys.
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // legacy Edge/IE
+}
+
+html::-webkit-scrollbar {
+  display: none; // Chrome, Safari, modern Edge
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -33,6 +42,12 @@ body {
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 body.is-locked {
@@ -161,55 +176,18 @@ section {
   padding: $space-2xl 0;
 }
 
-// Reveal-on-scroll primitive — JS toggles .is-visible via IntersectionObserver
+// Reveal-on-scroll primitive — scroll.js drives opacity/transform every
+// frame from scroll position (a continuous scrub, not a one-shot
+// transition), so no CSS transition is set here; this is just the
+// pre-JS/first-paint default to avoid a flash of fully-visible content.
 [data-reveal] {
   opacity: 0;
-  transform: translateY(36px);
-  transition: opacity $duration-base $ease-cinematic, transform $duration-base $ease-cinematic;
   will-change: opacity, transform;
-}
-
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-[data-reveal="fade"] {
-  transform: none;
-}
-
-[data-reveal="left"] {
-  transform: translate3d(-64px, 0, 0);
-}
-
-[data-reveal="left"].is-visible {
-  transform: translate3d(0, 0, 0);
-}
-
-[data-reveal="right"] {
-  transform: translate3d(64px, 0, 0);
-}
-
-[data-reveal="right"].is-visible {
-  transform: translate3d(0, 0, 0);
-}
-
-[data-reveal="scale"] {
-  transform: scale(0.92);
-}
-
-[data-reveal="scale"].is-visible {
-  transform: scale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
-    transition-duration: 0.01ms !important;
+    opacity: 1;
     transform: none !important;
   }
-}
-
-// Stagger children of a revealed group
-[data-reveal-group] > * {
-  transition-delay: calc(var(--reveal-index, 0) * 90ms);
 }

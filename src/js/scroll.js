@@ -1,31 +1,41 @@
 // ==========================================================================
-// Scroll architecture — maps page scroll to cinematic animation progress,
-// drives the ambient Three.js camera, and reveals sections/parallax layers.
+// Scroll architecture — maps page scroll to cinematic animation progress.
+// Section reveals are continuously scrubbed from scroll position (not a
+// one-shot transition fired by an IntersectionObserver): as an element
+// travels through the lower half of the viewport its opacity/transform
+// are driven directly from how far it has traveled, the same way a
+// scroll-driven cinematic scene plays out frame-by-frame rather than
+// cross-fading once and stopping.
 // ==========================================================================
 
-import { clamp, mapRange, prefersReducedMotion } from "./utils.js";
+import { clamp, lerp, mapRange, prefersReducedMotion } from "./utils.js";
+
+const REVEAL_VARIANTS = {
+  default: { y: 130, x: 0, scale: 0.94 },
+  fade: { y: 0, x: 0, scale: 1 },
+  left: { y: 0, x: -190, scale: 1 },
+  right: { y: 0, x: 190, scale: 1 },
+  scale: { y: 50, x: 0, scale: 0.72 }
+};
+
+function smoothstep(t) {
+  const x = clamp(t, 0, 1);
+  return x * x * (3 - 2 * x);
+}
 
 export function initScrollAnimations({ threeScene } = {}) {
   const reducedMotion = prefersReducedMotion();
-  const revealEls = document.querySelectorAll("[data-reveal]");
+  const revealEls = Array.from(document.querySelectorAll("[data-reveal]"));
   const parallaxEls = document.querySelectorAll("[data-parallax]");
 
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.18, rootMargin: "0px 0px -8% 0px" }
-  );
+  document.querySelector(".hero")?.classList.add("is-revealed");
 
-  revealEls.forEach((el, index) => {
-    el.style.setProperty("--reveal-index", index % 6);
-    revealObserver.observe(el);
-  });
+  if (reducedMotion) {
+    revealEls.forEach((el) => {
+      el.style.opacity = 1;
+      el.style.transform = "none";
+    });
+  }
 
   let ticking = false;
   let mouseX = 0;
@@ -35,6 +45,37 @@ export function initScrollAnimations({ threeScene } = {}) {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
     return maxScroll > 0 ? clamp(scrollTop / maxScroll, 0, 1) : 0;
+  }
+
+  function updateReveals() {
+    if (reducedMotion) return;
+    const viewportH = window.innerHeight;
+    // Cap the horizontal travel to a fraction of the viewport so a
+    // full-width block on a narrow screen never gets pushed past the
+    // edge and widens the page's scrollable area.
+    const maxX = window.innerWidth * 0.3;
+
+    revealEls.forEach((el, index) => {
+      const rect = el.getBoundingClientRect();
+      const variant = REVEAL_VARIANTS[el.dataset.reveal] || REVEAL_VARIANTS.default;
+      const stagger = (index % 5) * 34;
+
+      // Element starts animating in once its top crosses ~92% down the
+      // viewport, and finishes settling once it reaches ~42% up — a wide
+      // window so the motion reads as a continuous scroll-scrubbed
+      // entrance rather than a snap.
+      const enterAt = viewportH * 0.92 + stagger;
+      const settleAt = viewportH * 0.42;
+      const eased = smoothstep(mapRange(rect.top, settleAt, enterAt, 1, 0));
+
+      const startX = clamp(variant.x, -maxX, maxX);
+      const ty = lerp(variant.y, 0, eased);
+      const tx = lerp(startX, 0, eased);
+      const sc = lerp(variant.scale, 1, eased);
+
+      el.style.opacity = eased.toFixed(3);
+      el.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) scale(${sc.toFixed(3)})`;
+    });
   }
 
   function updateParallax() {
@@ -54,6 +95,7 @@ export function initScrollAnimations({ threeScene } = {}) {
     ticking = false;
     const progress = getScrollProgress();
     threeScene?.updateScroll(progress);
+    updateReveals();
     updateParallax();
   }
 

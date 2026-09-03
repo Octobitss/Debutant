@@ -77,23 +77,6 @@
   color: $text-on-dark-muted;
 }
 
-.dresscode-card--girls {
-  transform: translate3d(-40px, 0, 0);
-  opacity: 0;
-  transition: opacity $duration-base $ease-cinematic, transform $duration-base $ease-cinematic;
-}
-
-.dresscode-card--boys {
-  transform: translate3d(40px, 0, 0);
-  opacity: 0;
-  transition: opacity $duration-base $ease-cinematic, transform $duration-base $ease-cinematic;
-}
-
-.dresscode-card.is-visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
 .dresscode__palette {
   margin-top: $space-lg;
   display: flex;
@@ -113,17 +96,5 @@
 @media (max-width: $bp-tablet) {
   .dresscode__grid {
     grid-template-columns: 1fr;
-  }
-
-  .dresscode-card--girls,
-  .dresscode-card--boys {
-    transform: translate3d(0, 24px, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dresscode-card--girls,
-  .dresscode-card--boys {
-    transform: none;
   }
 }

@@ -35,9 +35,9 @@ $gradient-veil: linear-gradient(180deg, rgba($color-dark, 0.92) 0%, rgba($color-
 $gradient-glow: radial-gradient(circle at 50% 30%, rgba($color-secondary, 0.35), rgba($color-dark, 0) 70%);
 
 // Typography
-$font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-$font-script: "Cormorant Garamond", serif;
-$font-body: "Jost", "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+$font-display: "Fraunces", "Times New Roman", serif;
+$font-script: "Fraunces", serif;
+$font-body: "Urbanist", -apple-system, BlinkMacSystemFont, sans-serif;
 
 $fs-hero-title: clamp(3.4rem, 11vw, 8rem);
 $fs-hero-subtitle: clamp(1.4rem, 4.4vw, 2.8rem);

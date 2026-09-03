@@ -87,13 +87,15 @@ function invitationCoverSvg(w, h) {
     ${cornerFlourish(w - 70, 70, 1.6, PALETTE.gold, 90)}
     ${cornerFlourish(70, h - 70, 1.6, PALETTE.gold, -90)}
     ${cornerFlourish(w - 70, h - 70, 1.6, PALETTE.gold, 180)}
-    ${petalCluster(w * 0.5, h * 0.28, 1.4, PALETTE.secondary)}
-    <text x="50%" y="52%" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+    <text x="50%" y="36%" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+      font-size="${Math.round(w * 0.021)}" letter-spacing="7" fill="${PALETTE.gold}" opacity="0.9">TICKET TO WILDEST DREAMS</text>
+    <line x1="${w * 0.5 - w * 0.12}" y1="${h * 0.385}" x2="${w * 0.5 - w * 0.045}" y2="${h * 0.385}" stroke="${PALETTE.gold}" stroke-width="1" opacity="0.6" />
+    <line x1="${w * 0.5 + w * 0.045}" y1="${h * 0.385}" x2="${w * 0.5 + w * 0.12}" y2="${h * 0.385}" stroke="${PALETTE.gold}" stroke-width="1" opacity="0.6" />
+    ${petalCluster(w * 0.5, h * 0.445, 1.4, PALETTE.secondary)}
+    <text x="50%" y="54%" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
       font-size="${Math.round(w * 0.09)}" fill="${PALETTE.cream}" letter-spacing="4">Trina's XVIII</text>
-    <text x="50%" y="58%" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+    <text x="50%" y="59.5%" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
       font-style="italic" font-size="${Math.round(w * 0.038)}" fill="${PALETTE.secondaryLight}">Wildest Dreams</text>
-    <text x="50%" y="90%" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
-      font-size="${Math.round(w * 0.02)}" letter-spacing="6" fill="${PALETTE.cream}" opacity="0.6">DRAG TO TEAR OPEN</text>
   `;
 }
 

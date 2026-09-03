@@ -1,11 +1,19 @@
 // ==========================================================================
 // Tearable invitation entrance — an original Three.js recreation of the
 // "tear to enter" concept. The invitation is a real mass-spring cloth grid
-// (Verlet integration, iterative constraint relaxation): dragging grabs a
-// neighborhood of the fabric and pulls it elastically while cutting a rip
-// along the drag path edge-by-edge, exactly like tearing a physical sheet.
-// Once torn far enough, the corner pins drop and both halves fall away
-// under gravity, still flexing as connected cloth, revealing the site.
+// (Verlet integration, iterative constraint relaxation).
+//
+// Two distinct phases, matching a real sheet of paper:
+//   1. Free drag — grabbing and moving the pointer just pulls a
+//      neighborhood of the fabric around elastically (grab/moveGrab).
+//      Nothing tears yet; you can drag it, swing it, let go and it
+//      springs back. A very high stretch threshold means it only tears
+//      on its own if you yank it absurdly far.
+//   2. Commit — once you've dragged past a clear distance (or released
+//      with a fast flick), that's treated as deliberate intent to tear:
+//      a clean full-height cut opens at the grab point, the corner pins
+//      drop, and both halves fall away under gravity, still flexing as
+//      connected cloth, revealing the site underneath.
 // ==========================================================================
 
 import * as THREE from "three";
@@ -32,12 +40,15 @@ const PHYSICS = {
   damping: 0.985,
   constraintIterations: 3,
   stiffness: 0.7,
-  tearStretchRatio: 2.1, // an edge snaps once stretched past 2.1x its rest length
+  // How far you can freely drag/stretch the sheet before it tears on its
+  // own from sheer overstretch — deliberately generous so normal dragging
+  // never accidentally rips it; that's reserved for the commit gesture.
+  tearStretchRatio: 3.2,
   mouseRadiusRatio: 0.24,
-  mouseStrength: 0.55,
+  mouseStrength: 0.68,
   cutRadiusRatio: 0.035,
-  tearDragRatio: 0.22, // horizontal drag distance (fraction of width) that fully drops the pins
-  flickVelocity: 0.09 // px/ms — a fast flick can drop the pins early
+  tearDragRatio: 0.24, // horizontal drag distance (fraction of width) that commits to tearing
+  flickVelocity: 0.1 // px/ms — a fast flick commits to tearing early
 };
 
 function pointToSegmentDistSq(px, py, ax, ay, bx, by) {
@@ -79,7 +90,6 @@ class ClothTearScene {
     this._lastFrame = 0;
     this.grabActive = false;
     this.grabParticles = [];
-    this._grabbedIndexSet = null;
 
     this._onPointerDown = this._onPointerDown.bind(this);
     this._onPointerMove = this._onPointerMove.bind(this);
@@ -291,7 +301,6 @@ class ClothTearScene {
 
     for (let i = 0; i < this.count; i += 1) {
       if (this.invMass[i] === 0) continue;
-      if (this._grabbedIndexSet && this._grabbedIndexSet.has(i)) continue;
 
       const p = i * 3;
       const vx = (this.pos[p] - this.prev[p]) * damping;
@@ -320,16 +329,22 @@ class ClothTearScene {
     this.grabActive = true;
     this.grabTarget = { x: wx, y: wy };
     this.grabParticles = [];
-    this._grabbedIndexSet = new Set();
 
-    const r2 = this.mouseRadiusPx * this.mouseRadiusPx;
+    const radius = this.mouseRadiusPx;
     for (let i = 0; i < this.count; i += 1) {
       if (this.invMass[i] === 0) continue;
       const dx = this.pos[i * 3] - wx;
       const dy = this.pos[i * 3 + 1] - wy;
-      if (dx * dx + dy * dy <= r2) {
-        this.grabParticles.push({ index: i, ox: dx, oy: dy });
-        this._grabbedIndexSet.add(i);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist <= radius) {
+        // Soft falloff from 1 at the grab point to 0 at the radius edge —
+        // like a finger pressing into fabric, not a rigid block being
+        // yanked. Without this, particles right at the boundary would
+        // get the full drag delta applied against untouched neighbors
+        // just outside it and snap almost instantly.
+        const t = 1 - dist / radius;
+        const weight = t * t * (3 - 2 * t);
+        this.grabParticles.push({ index: i, ox: dx, oy: dy, weight });
       }
     }
   }
@@ -344,11 +359,13 @@ class ClothTearScene {
       const ty = this.grabTarget.y + particle.oy;
       const beforeX = this.pos[p];
       const beforeY = this.pos[p + 1];
+      const rate = s * particle.weight;
 
-      this.pos[p] = lerp(beforeX, tx, s);
-      this.pos[p + 1] = lerp(beforeY, ty, s);
-      // Leave prev at the pre-blend position so release carries this
-      // frame's motion as natural momentum (Verlet-implied velocity).
+      this.pos[p] = lerp(beforeX, tx, rate);
+      this.pos[p + 1] = lerp(beforeY, ty, rate);
+      // Leave prev at the pre-nudge position so release/settling carries
+      // just this frame's nudge as momentum (Verlet-implied velocity)
+      // instead of compounding with whatever normal physics already did.
       this.prev[p] = beforeX;
       this.prev[p + 1] = beforeY;
     }
@@ -357,7 +374,6 @@ class ClothTearScene {
   _releaseGrab() {
     this.grabActive = false;
     this.grabParticles = [];
-    this._grabbedIndexSet = null;
   }
 
   _applyCut(fromX, fromY, toX, toY) {
@@ -408,6 +424,7 @@ class ClothTearScene {
     this.lastClientX = event.clientX;
     this.velocity = 0;
     this._startGrab(w.x, w.y);
+    this.canvas.classList.add("is-grabbing");
   }
 
   _onPointerMove(event) {
@@ -419,7 +436,10 @@ class ClothTearScene {
       this.onTearStart?.();
     }
 
-    this._applyCut(this.lastPointer.x, this.lastPointer.y, w.x, w.y);
+    // Free drag only — this just moves the grabbed handful of fabric,
+    // it does not cut anything. The sheet stretches elastically and you
+    // can move it around freely until you commit to tearing it (see
+    // _commitTear), exactly like picking up and swinging real paper.
     this.grabTarget = { x: w.x, y: w.y };
 
     const now = performance.now();
@@ -431,28 +451,42 @@ class ClothTearScene {
 
     const dragDistance = Math.abs(event.clientX - this.dragStartX);
     if (dragDistance > this.width * PHYSICS.tearDragRatio) {
-      this._dropPinsAndFling(Math.sign(event.clientX - this.dragStartX) || 1);
+      this._commitTear(Math.sign(event.clientX - this.dragStartX) || 1);
     }
   }
 
   _onPointerUp() {
     if (!this.dragging) return;
     this.dragging = false;
+    this.canvas.classList.remove("is-grabbing");
     if (this.pinsDropped) return;
 
     const dragDistance = Math.abs((this.lastClientX ?? 0) - (this.dragStartX ?? 0));
     if (Math.abs(this.velocity) > PHYSICS.flickVelocity && dragDistance > this.width * 0.08) {
-      this._dropPinsAndFling(Math.sign(this.velocity) || 1);
+      this._commitTear(Math.sign(this.velocity) || 1);
       return;
     }
 
+    // Not far enough to commit — let it spring back naturally under its
+    // own elasticity, ready to be grabbed and dragged again.
     this._releaseGrab();
+  }
+
+  /** Deliberate "I mean to tear this" gesture: a clean cut right where
+   * you're currently gripping the sheet, then the pins drop and it falls
+   * away. This is what actually rips it — free dragging never does. */
+  _commitTear(direction = 1) {
+    if (this.pinsDropped) return;
+    const cutX = this.grabTarget?.x ?? this.lastPointer?.x ?? 0;
+    this._applyCut(cutX, this.height / 2 + 10, cutX, -this.height / 2 - 10);
+    this._dropPinsAndFling(direction);
   }
 
   _dropPinsAndFling() {
     if (this.pinsDropped) return;
     this.pinsDropped = true;
     this._releaseGrab();
+    this.canvas.classList.remove("is-grabbing");
 
     const centerX = this.lastPointer?.x ?? 0;
     const dtNominal = 1 / 60;
@@ -515,9 +549,8 @@ class ClothTearScene {
   forceOpen(direction = 1) {
     if (this.pinsDropped) return;
     this.onTearStart?.();
-    this.lastPointer = { x: 0, y: 0 };
-    this._applyCut(0, this.height / 2 + 10, 0, -this.height / 2 - 10);
-    this._dropPinsAndFling(direction);
+    this.grabTarget = { x: 0, y: 0 };
+    this._commitTear(direction);
   }
 
   resize() {
