@@ -4,17 +4,7 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { MIRROR_VERTEX_SHADER, MIRROR_FRAGMENT_SHADER } from "./shaders.js";
 
-// A heart-shaped portrait outline instead of a plain rectangle, so it
-// reads as a deliberate keepsake shape rather than a photo pasted over
-// the frame. Classic two-lobe bezier heart, recentered/rescaled to the
-// requested width/height, with the image mapped "cover" style (fills the
-// whole shape, cropping excess, never stretched) and `focus` choosing
-// which part of the source image lands at the shape's own center.
-//
-// The commonly-used bezier heart curve is authored point-up/lobes-down —
-// every Y here is negated from the textbook version so the point ends up
-// at the bottom and the cleft at the top, like an actual heart.
-function createHeartGeometry(width, height, imageAspect, focus = { x: 0.5, y: 0.5 }) {
+function createHeartShape() {
   const shape = new THREE.Shape();
   shape.moveTo(5, -5);
   shape.bezierCurveTo(5, -5, 4, 0, 0, 0);
@@ -23,8 +13,11 @@ function createHeartGeometry(width, height, imageAspect, focus = { x: 0.5, y: 0.
   shape.bezierCurveTo(12, -15.4, 16, -11, 16, -7);
   shape.bezierCurveTo(16, -7, 16, 0, 10, 0);
   shape.bezierCurveTo(7, 0, 5, -5, 5, -5);
+  return shape;
+}
 
-  const geometry = new THREE.ShapeGeometry(shape, 32);
+function createHeartGeometry(width, height, imageAspect, focus = { x: 0.5, y: 0.5 }) {
+  const geometry = new THREE.ShapeGeometry(createHeartShape(), 32);
   geometry.computeBoundingBox();
   const bbox = geometry.boundingBox;
   const bw = bbox.max.x - bbox.min.x;
@@ -34,9 +27,6 @@ function createHeartGeometry(width, height, imageAspect, focus = { x: 0.5, y: 0.
   const sx = width / bw;
   const sy = height / bh;
 
-  // "Cover": scale the image's own aspect ratio up to fully fill the
-  // (width,height) box, cropping the excess, instead of stretching it
-  // (distorts) or letterboxing it (contain — leaves transparent margin).
   const boxAspect = width / height;
   const renderedW = imageAspect < boxAspect ? width : height * imageAspect;
   const renderedH = imageAspect < boxAspect ? width / imageAspect : height;
@@ -55,24 +45,37 @@ function createHeartGeometry(width, height, imageAspect, focus = { x: 0.5, y: 0.
   return geometry;
 }
 
-/**
- * The glass-distortion portrait, sized to sit inside the mirror model's
- * frame opening (this is a child of MirrorModel's scaled group, so these
- * dimensions are in the mirror model's own local units).
- */
+function createHeartBackingGeometry(width, height, scale) {
+  const geometry = new THREE.ShapeGeometry(createHeartShape(), 32);
+  geometry.computeBoundingBox();
+  const bbox = geometry.boundingBox;
+  const bw = bbox.max.x - bbox.min.x;
+  const bh = bbox.max.y - bbox.min.y;
+  const cx = (bbox.max.x + bbox.min.x) / 2;
+  const cy = (bbox.max.y + bbox.min.y) / 2;
+  const sx = (width / bw) * scale;
+  const sy = (height / bh) * scale;
+
+  const pos = geometry.attributes.position;
+  for (let i = 0; i < pos.count; i += 1) {
+    pos.setXY(i, (pos.getX(i) - cx) * sx, (pos.getY(i) - cy) * sy);
+  }
+  pos.needsUpdate = true;
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
 export default function MirrorGlass({ progressRef, computeState, size = [0.34, 0.3] }) {
   const texture = useLoader(THREE.TextureLoader, "/assets/images/loading-hero.webp");
   texture.colorSpace = THREE.SRGBColorSpace;
   const materialRef = useRef(null);
+  const backingRef = useRef(null);
   const imageAspect = texture.image.width / texture.image.height;
-  // The face in loading-hero.webp sits well above the image's own
-  // vertical center — bias the crop's focus upward in the source so the
-  // face lands in the heart's wide/round middle instead of being pushed
-  // up into the narrow cleft between the lobes.
   const geometry = useMemo(
     () => createHeartGeometry(size[0], size[1], imageAspect, { x: 0.5, y: 0.64 }),
     [size[0], size[1], imageAspect]
   );
+  const backingGeometry = useMemo(() => createHeartBackingGeometry(size[0], size[1], 1.12), [size[0], size[1]]);
 
   const uniforms = useMemo(
     () => ({
@@ -90,18 +93,27 @@ export default function MirrorGlass({ progressRef, computeState, size = [0.34, 0
     uniforms.uProgress.value = distortion;
     uniforms.uOpacity.value = opacity;
     if (materialRef.current) materialRef.current.visible = opacity > 0.01;
+    if (backingRef.current) {
+      backingRef.current.opacity = opacity;
+      backingRef.current.visible = opacity > 0.01;
+    }
   });
 
   return (
-    <mesh position={[0, 0.05, 0.02]} geometry={geometry}>
-      <shaderMaterial
-        ref={materialRef}
-        uniforms={uniforms}
-        vertexShader={MIRROR_VERTEX_SHADER}
-        fragmentShader={MIRROR_FRAGMENT_SHADER}
-        transparent
-        side={THREE.DoubleSide}
-      />
-    </mesh>
+    <group>
+      <mesh position={[0, 0.05, 0.01]} geometry={backingGeometry}>
+        <meshBasicMaterial ref={backingRef} color="#92344a" transparent opacity={1} />
+      </mesh>
+      <mesh position={[0, 0.05, 0.02]} geometry={geometry}>
+        <shaderMaterial
+          ref={materialRef}
+          uniforms={uniforms}
+          vertexShader={MIRROR_VERTEX_SHADER}
+          fragmentShader={MIRROR_FRAGMENT_SHADER}
+          transparent
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
   );
 }

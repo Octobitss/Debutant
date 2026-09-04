@@ -22,9 +22,6 @@ export default function MirrorScene() {
         { opacity: 1, y: 0, ease: "power2.out", duration: 1.2, delay: 0.3 }
       );
 
-      // Explicit fromTo (not a bare `.to`) so this scrub tween has an
-      // unambiguous starting value and doesn't fight the one-time intro
-      // tween above over who "owns" opacity when scroll returns to 0.
       gsap.fromTo(
         titleRef.current,
         { opacity: 1, y: 0 },

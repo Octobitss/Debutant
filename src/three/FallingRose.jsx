@@ -5,15 +5,8 @@ import * as THREE from "three";
 
 const ROSE_URL = "/assets/3d/Rose.glb";
 const COUNT = 180;
-// The Z window used to be symmetric around the camera, so roughly half of
-// every rose's cycle was spent behind the camera (never visible) since
-// the camera always looks toward -z. Biasing it forward-heavy means most
-// of the pool is actually in view at any moment, including on load.
 const Z_AHEAD = 13;
 const Z_BEHIND = 3;
-// The source model's own bounding box is ~50 units across — recenter and
-// scale it down to fit the rest of the scene's ~1-unit-ish object sizes (a
-// "petal" should read as roughly 0.1-0.2 units, not a room-filling boulder).
 const SOURCE_SCALE = 0.005;
 
 function useRoseGeometry() {
@@ -32,11 +25,6 @@ function useRoseGeometry() {
   }, [scene]);
 }
 
-/**
- * Falling rose petals as GPU instances (a single draw call for all of
- * them) so the count can be pushed high enough to read as "many" rather
- * than a handful of countable objects.
- */
 export default function FallingRose() {
   const { camera } = useThree();
   const geometry = useRoseGeometry();
@@ -57,11 +45,6 @@ export default function FallingRose() {
   const instances = useMemo(
     () =>
       Array.from({ length: COUNT }, () => ({
-        // Kept tight enough to actually sit inside a typical viewing
-        // frustum (the initial mirror-approach shot has a narrow 42deg
-        // fov) — a wider spread meant most roses were statistically off
-        // to the side and never visible, including on first load before
-        // any scrolling happened.
         x: (Math.random() - 0.5) * 11,
         y: (Math.random() - 0.5) * 14,
         z: (Math.random() - 0.5) * (Z_AHEAD + Z_BEHIND),
@@ -85,17 +68,7 @@ export default function FallingRose() {
       inst.y -= inst.fallSpeed * delta * 0.6;
       const sway = Math.sin(elapsed * inst.sway + inst.swayPhase) * 0.4;
 
-      // Wrap continuously into a +/-11 window around the camera instead of
-      // resetting position once a threshold is crossed — a threshold reset
-      // meant a fast scroll (a big single-frame camera jump) could push
-      // many roses past it in the same frame, all snapping to a new spot
-      // at once ("popping"). Wrapping recomputes a smooth position every
-      // frame with no discrete reset event, so it stays stable regardless
-      // of how far the camera jumps between frames.
       const wrappedY = camY + (THREE.MathUtils.euclideanModulo(inst.y - camY + 7, 14) - 7);
-      // Asymmetric: mostly ahead of the camera (-Z_AHEAD), a little
-      // trailing behind (+Z_BEHIND) so roses don't vanish the instant
-      // they're passed.
       const wrappedZ =
         camZ + (THREE.MathUtils.euclideanModulo(inst.z - camZ + Z_AHEAD, Z_AHEAD + Z_BEHIND) - Z_AHEAD);
 

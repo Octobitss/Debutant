@@ -1,9 +1,3 @@
-// ==========================================================================
-// One-time generator for placeholder WebP assets so the site never ships
-// with broken <img> references before real photography is supplied.
-// Run with: npm run placeholders
-// ==========================================================================
-
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

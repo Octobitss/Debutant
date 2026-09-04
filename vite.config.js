@@ -17,7 +17,18 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "assets",
     sourcemap: false,
-    target: "es2019"
+    target: "es2019",
+    cssMinify: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: "assets/main.min.js",
+        chunkFileNames: "assets/main.min.js",
+        assetFileNames: (assetInfo) =>
+          assetInfo.name && assetInfo.name.endsWith(".css")
+            ? "assets/main.min.css"
+            : "assets/[name]-[hash][extname]"
+      }
+    }
   },
   css: {
     preprocessorOptions: {

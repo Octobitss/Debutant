@@ -1,7 +1,3 @@
-// The camera's journey through the whole invitation, keyed by overall page
-// scroll progress (0..1). Object placement in SceneEnvironment.jsx is
-// hand-tuned to line up with these same z depths.
-
 export const CAMERA_STOPS = [
   { t: 0.0, pos: [0, 0, 8], look: [0, 0, 0], fov: 42 },
   { t: 0.12, pos: [0, 0, 1.5], look: [0, 0, 0], fov: 42 },
@@ -20,14 +16,6 @@ export const DEPTHS = {
   mirror: 0,
   gardenStart: -4,
   gardenEnd: -18,
-  // Each venue/dresscode z is chosen so the camera is still ~6 units short
-  // of it at that plane's own PhotoPlane `peak` progress (verified against
-  // CAMERA_STOPS). The camera's own position is a damped lerp toward the
-  // path (see CameraRig), not a pure function of scroll progress, so it
-  // lags by a variable amount depending on scroll speed/history — a small
-  // standoff was visible on a slow scroll but the plane fell behind the
-  // camera (and vanished) on a faster one. A larger standoff gives enough
-  // margin to stay in front of the camera either way.
   venue: [-23, -26.5],
   dresscode: [-32, -35],
   outroMirror: -50

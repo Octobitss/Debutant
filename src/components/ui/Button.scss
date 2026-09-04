@@ -28,7 +28,6 @@
 }
 
 .btn--outline {
-  // Sits directly on the open (light) scene background, not a dark card.
   border: 1px solid rgba($color-dark, 0.4);
   color: $color-dark;
   background: rgba($color-cream, 0.35);

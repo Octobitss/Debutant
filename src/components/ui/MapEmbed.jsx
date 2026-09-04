@@ -19,12 +19,14 @@ export default function MapEmbed() {
   return (
     <div className="map-embed">
       <div className="map-embed__frame">
-        {/* Replace with your Google Maps embed iframe */}
         <div id="google-map">
-          <div className="map-embed__placeholder">
-            <strong>{SITE_CONFIG.venue.name}</strong>
-            <span>{SITE_CONFIG.venue.address}</span>
-          </div>
+          <iframe
+            src={SITE_CONFIG.venue.mapsEmbedUrl}
+            title={SITE_CONFIG.venue.name}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
         </div>
       </div>
 

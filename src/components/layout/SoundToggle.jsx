@@ -2,11 +2,6 @@ import { useRef, useState } from "react";
 import { AUDIO_CONFIG } from "../../config/siteConfig";
 import "./SoundToggle.scss";
 
-/**
- * Ambient audio architecture — inert until a real user gesture unlocks it,
- * and only rendered at all once AUDIO_CONFIG.enabled + a real source exist.
- * No autoplay: playback only ever starts from this click handler.
- */
 export default function SoundToggle() {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);

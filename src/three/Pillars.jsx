@@ -4,12 +4,6 @@ import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 
 const CAPITAL_URL = "/assets/3d/pillar-decimated.obj";
-// The source doric+capital model is wide and short (~40 units across,
-// ~15.6 tall) — using it uniformly-scaled as "the pillar" produced a
-// squat stone plinth, not the tall slender fluted column the reference
-// image shows. Instead: a procedural fluted shaft does the actual column
-// (fully controllable proportions), and the real model is only used,
-// scaled way down, as the decorative capital sitting on top of it.
 const SHAFT_RADIUS = 0.42;
 const SHAFT_HEIGHT = 6.4;
 const X_OFFSET = 9;
@@ -44,7 +38,6 @@ function useCapitalGeometry() {
   }, [obj]);
 }
 
-/** A row of tall fluted stone columns flanking the path on both sides, far enough out that they never crowd the main scene. */
 export default function Pillars({ nearZ = 4, farZ = -56, spacing = 11, groundY = -1.5 }) {
   const capitalGeometry = useCapitalGeometry();
   const shaftGeometry = useMemo(() => createFlutedShaftGeometry(SHAFT_RADIUS, SHAFT_HEIGHT), []);

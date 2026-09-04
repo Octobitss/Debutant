@@ -3,12 +3,6 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { MIRROR_VERTEX_SHADER, MIRROR_FRAGMENT_SHADER } from "./shaders.js";
 
-/**
- * A textured plane using the glass-distortion shader. `computeState(progress)`
- * lets each usage (the near approach/crossing mirror, the distant outro
- * mirror) supply its own mapping from overall scroll progress to
- * {distortion, opacity} without duplicating the shader plumbing.
- */
 export default function MirrorMesh({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, progressRef, computeState }) {
   const texture = useLoader(THREE.TextureLoader, "/assets/images/debutante-portrait.webp");
   texture.colorSpace = THREE.SRGBColorSpace;

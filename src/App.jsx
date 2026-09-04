@@ -5,6 +5,7 @@ import { ScrollTrigger } from "./animations/gsap";
 import LoadingScreen from "./components/layout/LoadingScreen.jsx";
 import FixedCountdown from "./components/layout/FixedCountdown.jsx";
 import SoundToggle from "./components/layout/SoundToggle.jsx";
+import SpotifyPlayer from "./components/layout/SpotifyPlayer.jsx";
 import SceneEnvironment from "./three/SceneEnvironment.jsx";
 import MirrorScene from "./scenes/MirrorScene/MirrorScene.jsx";
 import GardenScene from "./scenes/GardenScene/GardenScene.jsx";
@@ -41,6 +42,7 @@ export default function App() {
       <SceneEnvironment progressRef={progressRef} reducedMotion={reducedMotion} />
       <FixedCountdown />
       <SoundToggle />
+      <SpotifyPlayer />
       <main id="main-content" style={{ opacity: ready ? 1 : 0, transition: "opacity 0.6s ease" }}>
         <MirrorScene />
         <GardenScene />

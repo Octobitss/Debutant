@@ -1,6 +1,3 @@
-// Generic binary-STL decimator (spatial vertex clustering) with the same
-// Z-up (Blender) -> Y-up (three.js) axis conversion used for the mirror.
-// Usage: node scripts/decimate-stl.mjs <src.stl> <out.obj> [RES]
 import fs from "node:fs";
 import path from "node:path";
 
@@ -103,7 +100,6 @@ for (let vi = 0; vi < vertCount; vi += 1) {
   const x = c.x / c.n - centerX;
   const y = c.y / c.n - centerY;
   const z = c.z / c.n - centerZ;
-  // Z-up (Blender) -> Y-up (three.js): target = (x, z, -y)
   lines.push(`v ${x.toFixed(5)} ${z.toFixed(5)} ${(-y).toFixed(5)}`);
 }
 for (let t = 0; t < indices.length; t += 3) {

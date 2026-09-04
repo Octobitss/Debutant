@@ -69,7 +69,6 @@ function CloudVariant({ geometry, normalize, zStart, zEnd, seed }) {
   );
 }
 
-/** Soft low-poly clouds drifting high overhead so the sky doesn't read as empty. */
 export default function CloudField({ zStart = 4, zEnd = -58 }) {
   const variants = useVariantGeometries();
 

@@ -21,9 +21,6 @@ export default function GardenScene() {
 
       paragraphs.forEach((el, index) => {
         const isLast = index === paragraphs.length - 1;
-        // The closing signature is fine to stay put once revealed; every
-        // other paragraph fades back out so it never lingers opaque
-        // behind the fixed countdown as the page keeps scrolling.
         revealOnScroll(el, { y: 30, fadeOut: !isLast });
       });
     }, sectionRef);

@@ -1,8 +1,4 @@
-// Shared GLSL for the mirror's glass-distortion effect — used both for the
-// near mirror (approach + crossing) and, at low intensity, the distant one
-// that reappears in the outro.
-
-export const MIRROR_VERTEX_SHADER = /* glsl */ `
+export const MIRROR_VERTEX_SHADER = `
   varying vec2 vUv;
   uniform float uProgress;
   uniform float uTime;
@@ -16,7 +12,7 @@ export const MIRROR_VERTEX_SHADER = /* glsl */ `
   }
 `;
 
-export const MIRROR_FRAGMENT_SHADER = /* glsl */ `
+export const MIRROR_FRAGMENT_SHADER = `
   varying vec2 vUv;
   uniform sampler2D uMap;
   uniform float uProgress;
@@ -26,10 +22,6 @@ export const MIRROR_FRAGMENT_SHADER = /* glsl */ `
     vec2 uv = vUv;
     uv.x += sin(uv.y * 22.0 + uProgress * 7.0) * 0.025 * uProgress;
     uv.y += cos(uv.x * 18.0 + uProgress * 5.0) * 0.02 * uProgress;
-    // Geometries that map uv using "contain" (fit the image without
-    // stretching it) deliberately produce uv outside [0,1] in the
-    // letterboxed margin — render that margin transparent rather than
-    // the default clamped/smeared edge pixel.
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
       discard;
     }

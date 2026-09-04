@@ -4,12 +4,6 @@ import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 import MirrorGlass from "./MirrorGlass.jsx";
 
-/**
- * The real decimated mirror model (see scripts/decimate-mirror.mjs — the
- * source STL was 338MB/6.76M triangles, cut down ~99% via spatial vertex
- * clustering to something a browser can actually load) plus the existing
- * glass-distortion portrait plane, positioned to sit in its frame opening.
- */
 export default function MirrorModel({ position = [0, 0, 0], scale = 3.6, progressRef, computeState }) {
   const obj = useLoader(OBJLoader, "/assets/3d/mirror-decimated.obj");
 

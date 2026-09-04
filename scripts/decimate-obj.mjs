@@ -1,8 +1,3 @@
-// Generic ASCII-OBJ decimator (spatial vertex clustering, same technique as
-// decimate-mirror.mjs) for meshes that don't need per-STL binary parsing.
-// ocean.obj is a single 105k-triangle subdivided "Plane" — far more detail
-// than a background floor needs — this cuts it down to something cheap to
-// render while keeping the overall wave silhouette.
 import fs from "node:fs";
 import path from "node:path";
 

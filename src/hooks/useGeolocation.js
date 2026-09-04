@@ -7,7 +7,6 @@ function toRad(deg) {
   return (deg * Math.PI) / 180;
 }
 
-/** Straight-line ("as the crow flies") distance — NOT a driving distance. */
 function haversineKm(lat1, lon1, lat2, lon2) {
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
@@ -17,14 +16,8 @@ function haversineKm(lat1, lon1, lat2, lon2) {
   return EARTH_RADIUS_KM * c;
 }
 
-/**
- * Handles the "Check My Location" flow: requests geolocation, then either
- * calls Google's Distance Matrix API for a real driving estimate (only if
- * VITE_GOOGLE_MAPS_API_KEY is configured) or falls back to a straight-line
- * Haversine estimate, always clearly labeled as an estimate.
- */
 export function useGeolocation() {
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
   const [coords, setCoords] = useState(null);
 
@@ -69,7 +62,6 @@ export function useGeolocation() {
               return;
             }
           } catch (error) {
-            // Fall through to the straight-line estimate below.
           }
         }
 

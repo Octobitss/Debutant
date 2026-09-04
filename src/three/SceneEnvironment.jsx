@@ -16,18 +16,13 @@ import { DEPTHS } from "./cameraPath.js";
 const FOG_STOPS = [
   { t: 0, color: "#a08a9c" },
   { t: 0.11, color: "#ab97a5" },
-  // The camera physically passes through the mirror's glass plane around
-  // p=0.145 (verified: camera z crosses 0 right there) — there's nothing
-  // behind the glass to render at that exact instant (the garden field
-  // doesn't start until z=-4), so a bright flash sells "stepping through
-  // the mirror" instead of a jarring blank frame.
   { t: 0.145, color: "#f4e6da" },
   { t: 0.19, color: "#b6a0b0" },
   { t: 0.35, color: "#a3b09e" },
   { t: 0.55, color: "#ac9aa7" },
   { t: 0.75, color: "#b3a0ac" },
   { t: 1, color: "#8f7d8b" }
-];
+]; 
 
 function sampleColor(progress, target) {
   if (progress <= FOG_STOPS[0].t) return target.set(FOG_STOPS[0].color);

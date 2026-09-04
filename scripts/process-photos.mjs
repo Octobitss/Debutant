@@ -1,8 +1,3 @@
-// One-time processing of the real supplied photography into optimized,
-// web-sized WebP assets. Unlike generate-placeholders.mjs (which draws
-// procedural SVG art), this resizes actual source photos — preserving each
-// photo's native aspect ratio rather than cropping, since these are real
-// people/venues and cropping decisions should stay visible/reviewable.
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -33,7 +28,7 @@ const results = [];
 for (const job of JOBS) {
   const srcPath = path.join(DIR, job.src);
   const outPath = path.join(DIR, job.out);
-  const image = sharp(srcPath).rotate(); // rotate() auto-applies EXIF orientation
+  const image = sharp(srcPath).rotate();
   const resized = image.resize({ width: job.width, withoutEnlargement: true });
   const info = await resized.webp({ quality: 82 }).toFile(outPath);
   results.push({ out: job.out, width: info.width, height: info.height, aspect: +(info.width / info.height).toFixed(4) });

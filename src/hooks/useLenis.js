@@ -3,12 +3,6 @@ import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "../animations/gsap";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
-/**
- * Wires Lenis smooth-scroll into GSAP's ticker so ScrollTrigger stays in
- * sync with the smoothed scroll position — the standard Lenis+GSAP recipe.
- * Skipped entirely under prefers-reduced-motion (falls back to native,
- * un-smoothed scrolling).
- */
 export function useLenis() {
   const reducedMotion = usePrefersReducedMotion();
   const lenisRef = useRef(null);

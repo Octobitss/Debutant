@@ -1,20 +1,5 @@
 import { gsap } from "./gsap.js";
 
-/**
- * Fades an element in as it scrolls into view, then fades it back out
- * before it would otherwise scroll up and sit fully-opaque behind the
- * fixed countdown header. Every scene's text should use this rather than
- * a bare fade-in — a fade-in with no matching fade-out reliably ends up
- * garbling with the countdown once the user keeps scrolling past it.
- *
- * This is one GSAP timeline driven by one ScrollTrigger, not two separate
- * scrubbed tweens sharing the same `opacity`/`y` properties — two
- * independent scrubbed tweens on the same property raced each other
- * depending on scroll direction (confirmed: the same scroll position
- * rendered a paragraph at opacity 1 when reached by scrolling down, and
- * opacity 0 reached by scrolling up). A single timeline's progress is a
- * pure function of scroll position, so it's identical either direction.
- */
 export function revealOnScroll(el, { x = 0, y = 30, fadeOut = true } = {}) {
   if (!el) return;
 

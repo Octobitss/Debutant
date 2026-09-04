@@ -17,11 +17,6 @@ export default function RsvpScene() {
         return;
       }
 
-      // One timeline driven by one ScrollTrigger — not two independent
-      // scrubbed tweens sharing `opacity`, which raced each other
-      // depending on scroll direction (confirmed elsewhere: the same
-      // scroll position rendered opposite opacity values depending on
-      // whether it was reached by scrolling down vs. up).
       const tl = gsap.timeline({
         scrollTrigger: { trigger: dateRef.current, start: "top 80%", end: "top -20%", scrub: 1 }
       });

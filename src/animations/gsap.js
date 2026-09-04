@@ -1,8 +1,3 @@
-// ==========================================================================
-// Single place that registers GSAP plugins — import gsap/ScrollTrigger from
-// here everywhere else so registration only ever happens once.
-// ==========================================================================
-
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 

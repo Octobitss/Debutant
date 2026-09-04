@@ -9,9 +9,6 @@
   pointer-events: none;
   padding: 0.5em 1.1em;
   border-radius: 999px;
-  // Deliberately near-opaque: scrolling text passes behind the fixed
-  // header constantly, and a translucent pill lets it show through and
-  // garble with the countdown digits.
   background: rgba($color-dark-deep, 0.88);
   backdrop-filter: blur(10px);
   border: 1px solid rgba($color-champagne, 0.22);
@@ -41,8 +38,6 @@
   font-size: 0.56rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  // The pill itself has a near-opaque dark background, unlike most text
-  // in the scene — stays light on purpose.
   color: $text-on-light-card-muted;
 }
 

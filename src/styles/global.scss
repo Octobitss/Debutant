@@ -1,9 +1,4 @@
-// ==========================================================================
-// Global reset + base styles
-// ==========================================================================
-
 @use "variables" as *;
-@use "mixins" as *;
 @use "typography";
 
 *,
@@ -13,7 +8,7 @@
 }
 
 html {
-  scroll-behavior: auto; // Lenis owns smoothing; native smooth-scroll would fight it
+  scroll-behavior: auto;
   color-scheme: dark;
   overflow-x: hidden;
   scrollbar-width: none;
