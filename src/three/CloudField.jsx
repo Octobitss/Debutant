@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 
 const CLOUDS_URL = "/assets/3d/LOW-POLY CLOUDS.obj";
-const INSTANCES_PER_VARIANT = 9;
+const INSTANCES_PER_VARIANT = 11;
 const TARGET_SIZE = 5;
 
 function useVariantGeometries() {
@@ -37,7 +37,7 @@ function CloudVariant({ geometry, normalize, zStart, zEnd, seed }) {
   const instances = useMemo(
     () =>
       Array.from({ length: INSTANCES_PER_VARIANT }, (_, i) => ({
-        x: (Math.random() - 0.5) * 34,
+        x: (Math.random() - 0.5) * 42,
         z: zStart + Math.random() * (zEnd - zStart),
         y: 9 + Math.random() * 6,
         scale: normalize * (0.8 + Math.random() * 1.4),

@@ -16,13 +16,15 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
+    emptyOutDir: false,
+    cssCodeSplit: false,
     sourcemap: false,
     target: "es2019",
     cssMinify: true,
     rollupOptions: {
       output: {
         entryFileNames: "assets/main.min.js",
-        chunkFileNames: "assets/main.min.js",
+        chunkFileNames: "assets/[name].min.js",
         assetFileNames: (assetInfo) =>
           assetInfo.name && assetInfo.name.endsWith(".css")
             ? "assets/main.min.css"

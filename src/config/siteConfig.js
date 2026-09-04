@@ -44,8 +44,3 @@ export const AUDIO_CONFIG = {
   source: "/assets/audio/background.mp3",
   volume: 0.35
 };
-
-export const SPOTIFY_CONFIG = {
-  enabled: true,
-  trackId: "3j6Vua6G9chRUJ9dTiOh7k"
-};

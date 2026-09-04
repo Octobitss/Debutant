@@ -29,26 +29,6 @@
   border: 0;
 }
 
-.map-embed__placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: $space-xs;
-  text-align: center;
-  padding: $space-md;
-  color: $text-on-light-card-muted;
-}
-
-.map-embed__placeholder strong {
-  color: $text-on-light-card;
-  font-family: $font-display;
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
 .map-embed__side {
   display: flex;
   flex-direction: column;

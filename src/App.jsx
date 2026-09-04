@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useLenis } from "./hooks/useLenis";
 import { useScrollProgress } from "./hooks/useScrollProgress";
 import { ScrollTrigger } from "./animations/gsap";
 import LoadingScreen from "./components/layout/LoadingScreen.jsx";
 import FixedCountdown from "./components/layout/FixedCountdown.jsx";
 import SoundToggle from "./components/layout/SoundToggle.jsx";
-import SpotifyPlayer from "./components/layout/SpotifyPlayer.jsx";
+import MusicPlayer from "./components/layout/MusicPlayer.jsx";
 import SceneEnvironment from "./three/SceneEnvironment.jsx";
-import MirrorScene from "./scenes/MirrorScene/MirrorScene.jsx";
-import GardenScene from "./scenes/GardenScene/GardenScene.jsx";
-import VenueScene from "./scenes/VenueScene/VenueScene.jsx";
-import DressCodeScene from "./scenes/DressCodeScene/DressCodeScene.jsx";
-import RsvpScene from "./scenes/RsvpScene/RsvpScene.jsx";
-import OutroScene from "./scenes/OutroScene/OutroScene.jsx";
+
+const MirrorScene = lazy(() => import("./scenes/MirrorScene/MirrorScene.jsx"));
+const GardenScene = lazy(() => import("./scenes/GardenScene/GardenScene.jsx"));
+const VenueScene = lazy(() => import("./scenes/VenueScene/VenueScene.jsx"));
+const DressCodeScene = lazy(() => import("./scenes/DressCodeScene/DressCodeScene.jsx"));
+const RsvpScene = lazy(() => import("./scenes/RsvpScene/RsvpScene.jsx"));
+const OutroScene = lazy(() => import("./scenes/OutroScene/OutroScene.jsx"));
 
 const MIN_LOADING_MS = 900;
 
@@ -42,14 +43,16 @@ export default function App() {
       <SceneEnvironment progressRef={progressRef} reducedMotion={reducedMotion} />
       <FixedCountdown />
       <SoundToggle />
-      <SpotifyPlayer />
+      <MusicPlayer />
       <main id="main-content" style={{ opacity: ready ? 1 : 0, transition: "opacity 0.6s ease" }}>
-        <MirrorScene />
-        <GardenScene />
-        <VenueScene />
-        <DressCodeScene />
-        <RsvpScene />
-        <OutroScene />
+        <Suspense fallback={null}>
+          <MirrorScene />
+          <GardenScene />
+          <VenueScene />
+          <DressCodeScene />
+          <RsvpScene />
+          <OutroScene />
+        </Suspense>
       </main>
     </>
   );

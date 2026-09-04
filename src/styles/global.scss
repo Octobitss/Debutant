@@ -76,18 +76,6 @@ button:focus-visible,
   border-radius: 4px;
 }
 
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 .skip-link {
   position: fixed;
   top: -60px;
@@ -121,3 +109,7 @@ main {
   position: relative;
   z-index: $z-content;
 }
+/* watch-test-marker-2 */
+/* watch-test-marker-3 */
+/* watch-test-marker-4 */
+/* watch-test-marker-5 */

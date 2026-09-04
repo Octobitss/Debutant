@@ -4,9 +4,9 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 
-const PETAL_URL = "/assets/3d/petal.obj";
+const PETAL_URL = "/assets/3d/petal-decimated.obj";
 const PALETTE = ["#e9c3d6", "#c98fa8", "#f3e3cf", "#b5678a"];
-const INSTANCES_PER_VARIANT = 20;
+const INSTANCES_PER_VARIANT = 50;
 const TARGET_SIZE = 0.32;
 
 function useVariantGeometries() {
@@ -38,7 +38,7 @@ function PetalVariant({ geometry, normalize, color, zStart, zEnd, seed }) {
   const instances = useMemo(
     () =>
       Array.from({ length: INSTANCES_PER_VARIANT }, (_, i) => ({
-        x: (Math.random() - 0.5) * 16,
+        x: (Math.random() - 0.5) * 42,
         z: zStart + Math.random() * (zEnd - zStart),
         y: -1.95 + Math.random() * 0.45,
         scale: normalize * (0.7 + Math.random() * 0.8),
