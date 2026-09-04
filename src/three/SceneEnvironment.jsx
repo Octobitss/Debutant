@@ -6,11 +6,12 @@ import MirrorMesh from "./MirrorMesh.jsx";
 import MirrorModel from "./MirrorModel.jsx";
 import PhotoPlane from "./PhotoPlane.jsx";
 import OceanFloor from "./OceanFloor.jsx";
-import PetalScatter from "./PetalScatter.jsx";
+import WaterLilyScatter from "./WaterLilyScatter.jsx";
 import DebutanteGallery from "./DebutanteGallery.jsx";
-import FallingRose from "./FallingRose.jsx";
 import Pillars from "./Pillars.jsx";
 import CloudField from "./CloudField.jsx";
+import OldTree from "./OldTree.jsx";
+import FallingPetals from "./FallingPetals.jsx";
 import { DEPTHS } from "./cameraPath.js";
 
 const FOG_STOPS = [
@@ -87,9 +88,11 @@ function SceneContents({ progressRef, reducedMotion }) {
         />
 
         {!reducedMotion && <OceanFloor />}
-        {!reducedMotion && <PetalScatter zStart={DEPTHS.gardenStart + 8} zEnd={-58} />}
+        {!reducedMotion && <WaterLilyScatter zStart={DEPTHS.gardenStart + 8} zEnd={-58} />}
         {!reducedMotion && <Pillars />}
+        {!reducedMotion && <OldTree />}
         {!reducedMotion && <CloudField />}
+        {!reducedMotion && <FallingPetals />}
         <DebutanteGallery progressRef={progressRef} />
 
         <PhotoPlane
@@ -129,8 +132,6 @@ function SceneContents({ progressRef, reducedMotion }) {
           peak={0.66}
           fadeWidth={0.14}
         />
-
-        {!reducedMotion && <FallingRose />}
       </Suspense>
     </>
   );

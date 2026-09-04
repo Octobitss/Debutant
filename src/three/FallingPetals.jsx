@@ -1,13 +1,16 @@
-import { useLoader } from "@react-three/fiber";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 
 const PETAL_URL = "/assets/3d/petal-decimated.obj";
 const PALETTE = ["#e9c3d6", "#c98fa8", "#f3e3cf", "#b5678a"];
-const INSTANCES_PER_VARIANT = 50;
-const TARGET_SIZE = 0.32;
+const INSTANCES_PER_VARIANT = 22;
+const TARGET_SIZE = 0.3;
+const X_SPREAD = 11;
+const Y_SPREAD = 14;
+const Z_AHEAD = 13;
+const Z_BEHIND = 3;
 
 function useVariantGeometries() {
   const obj = useLoader(OBJLoader, PETAL_URL);
@@ -31,31 +34,48 @@ function useVariantGeometries() {
   }, [obj]);
 }
 
-function PetalVariant({ geometry, normalize, color, zStart, zEnd, seed }) {
+function FallingPetalVariant({ geometry, normalize, color, seed }) {
+  const { camera } = useThree();
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   const instances = useMemo(
     () =>
       Array.from({ length: INSTANCES_PER_VARIANT }, (_, i) => ({
-        x: (Math.random() - 0.5) * 42,
-        z: zStart + Math.random() * (zEnd - zStart),
-        y: -1.95 + Math.random() * 0.45,
-        scale: normalize * (0.7 + Math.random() * 0.8),
-        rot: [(Math.random() - 0.5) * 0.5, Math.random() * Math.PI * 2, (Math.random() - 0.5) * 0.5],
-        speed: 0.15 + Math.random() * 0.3,
-        phase: (i + seed) * 0.9
+        x: (Math.random() - 0.5) * X_SPREAD * 2,
+        y: (Math.random() - 0.5) * Y_SPREAD,
+        z: (Math.random() - 0.5) * (Z_AHEAD + Z_BEHIND),
+        rotSpeed: (Math.random() - 0.5) * 0.6,
+        rotPhase: [Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2],
+        fallSpeed: 0.15 + Math.random() * 0.25,
+        sway: 0.2 + Math.random() * 0.3,
+        swayPhase: (i + seed) * 0.9,
+        scale: normalize * (0.7 + Math.random() * 0.6)
       })),
-    [normalize, zStart, zEnd, seed]
+    [normalize, seed]
   );
 
-  useFrame(({ clock }) => {
+  useFrame((state, delta) => {
     if (!meshRef.current) return;
-    const t = clock.elapsedTime;
+    const elapsed = state.clock.elapsedTime;
+    const camY = camera.position.y;
+    const camZ = camera.position.z;
+
     instances.forEach((inst, i) => {
-      const sway = Math.sin(t * inst.speed + inst.phase) * 0.05;
-      dummy.position.set(inst.x + sway, inst.y, inst.z);
-      dummy.rotation.set(inst.rot[0], inst.rot[1] + t * 0.05, inst.rot[2]);
+      inst.y -= inst.fallSpeed * delta * 0.6;
+      const sway = Math.sin(elapsed * inst.sway + inst.swayPhase) * 0.4;
+
+      const wrappedY =
+        camY + (THREE.MathUtils.euclideanModulo(inst.y - camY + Y_SPREAD / 2, Y_SPREAD) - Y_SPREAD / 2);
+      const wrappedZ =
+        camZ + (THREE.MathUtils.euclideanModulo(inst.z - camZ + Z_AHEAD, Z_AHEAD + Z_BEHIND) - Z_AHEAD);
+
+      dummy.position.set(inst.x + sway, wrappedY, wrappedZ);
+      dummy.rotation.set(
+        inst.rotPhase[0] + elapsed * inst.rotSpeed,
+        inst.rotPhase[1] + elapsed * inst.rotSpeed * 0.7,
+        inst.rotPhase[2] + elapsed * inst.rotSpeed * 0.5
+      );
       dummy.scale.setScalar(inst.scale);
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
@@ -64,13 +84,13 @@ function PetalVariant({ geometry, normalize, color, zStart, zEnd, seed }) {
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[geometry, null, INSTANCES_PER_VARIANT]}>
+    <instancedMesh ref={meshRef} args={[geometry, null, INSTANCES_PER_VARIANT]} frustumCulled={false}>
       <meshStandardMaterial color={color} roughness={0.6} metalness={0.05} side={THREE.DoubleSide} />
     </instancedMesh>
   );
 }
 
-export default function PetalScatter({ zStart = 4, zEnd = -58 }) {
+export default function FallingPetals() {
   const variants = useVariantGeometries();
 
   if (!variants.length) return null;
@@ -78,13 +98,11 @@ export default function PetalScatter({ zStart = 4, zEnd = -58 }) {
   return (
     <group>
       {variants.map((variant, index) => (
-        <PetalVariant
+        <FallingPetalVariant
           key={index}
           geometry={variant.geometry}
           normalize={variant.normalize}
           color={PALETTE[index % PALETTE.length]}
-          zStart={zStart}
-          zEnd={zEnd}
           seed={index * 7}
         />
       ))}

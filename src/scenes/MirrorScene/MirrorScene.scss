@@ -17,7 +17,12 @@
 
 .mirror-scene__heading {
   margin-top: 0.4em;
-  font-size: $fs-hero-title;
+  font-family: "Great Vibes", $font-display;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(3.6rem, 11vw, 7.5rem);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
   background: linear-gradient(135deg, $color-dark-deep 10%, $color-dark 55%, $color-primary-dark 100%);
   -webkit-background-clip: text;
   background-clip: text;

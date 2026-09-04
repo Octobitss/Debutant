@@ -4,6 +4,8 @@ import path from "node:path";
 const SRC = path.resolve(process.argv[2]);
 const OUT = path.resolve(process.argv[3]);
 const RES = Number(process.argv[4] || 80);
+const RES_REPEATED = Number(process.argv[5] || RES);
+const REPEATED_THRESHOLD = 5;
 
 const text = fs.readFileSync(SRC, "utf8");
 
@@ -26,7 +28,13 @@ for (const line of text.split("\n")) {
   }
 }
 
+const nameCounts = new Map();
+for (const block of blocks) {
+  nameCounts.set(block.name, (nameCounts.get(block.name) || 0) + 1);
+}
+
 function decimateBlock(block) {
+  const res = nameCounts.get(block.name) > REPEATED_THRESHOLD ? RES_REPEATED : RES;
   const verts = block.verts;
   const tris = [];
   for (const line of block.faceLines) {
@@ -52,7 +60,7 @@ function decimateBlock(block) {
   }
 
   const maxDimension = Math.max(maxX - minX, maxY - minY, maxZ - minZ) || 1;
-  const voxelSize = maxDimension / RES;
+  const voxelSize = maxDimension / res;
   const invVoxel = 1 / voxelSize;
   const rangeX = Math.ceil((maxX - minX) * invVoxel) + 2;
   const rangeY = Math.ceil((maxY - minY) * invVoxel) + 2;
@@ -114,25 +122,38 @@ for (const block of blocks) {
 
 const results = blocks.map(decimateBlock);
 
+const grouped = new Map();
+for (const r of results) {
+  if (!grouped.has(r.name)) {
+    grouped.set(r.name, { name: r.name, vertices: [], triangles: [], srcVerts: 0, srcTris: 0 });
+  }
+  const g = grouped.get(r.name);
+  const base = g.vertices.length;
+  for (const v of r.vertices) g.vertices.push(v);
+  for (const [a, b, c] of r.triangles) g.triangles.push([a + base, b + base, c + base]);
+  g.srcVerts += r.srcVerts;
+  g.srcTris += r.srcTris;
+}
+
 let totalSrcV = 0, totalSrcT = 0, totalOutV = 0, totalOutT = 0;
 const lines = [];
 let outOffset = 0;
-for (const r of results) {
-  lines.push(`o ${r.name}`);
-  for (const v of r.vertices) {
+for (const g of grouped.values()) {
+  lines.push(`o ${g.name}`);
+  for (const v of g.vertices) {
     lines.push(`v ${(v.x / v.n).toFixed(5)} ${(v.y / v.n).toFixed(5)} ${(v.z / v.n).toFixed(5)}`);
   }
-  for (const [a, b, c] of r.triangles) {
+  for (const [a, b, c] of g.triangles) {
     lines.push(`f ${a + 1 + outOffset} ${b + 1 + outOffset} ${c + 1 + outOffset}`);
   }
   console.log(
-    `${r.name}: ${r.srcVerts.toLocaleString()}v/${r.srcTris.toLocaleString()}t -> ${r.vertices.length.toLocaleString()}v/${r.triangles.length.toLocaleString()}t`
+    `${g.name}: ${g.srcVerts.toLocaleString()}v/${g.srcTris.toLocaleString()}t -> ${g.vertices.length.toLocaleString()}v/${g.triangles.length.toLocaleString()}t`
   );
-  totalSrcV += r.srcVerts;
-  totalSrcT += r.srcTris;
-  totalOutV += r.vertices.length;
-  totalOutT += r.triangles.length;
-  outOffset += r.vertices.length;
+  totalSrcV += g.srcVerts;
+  totalSrcT += g.srcTris;
+  totalOutV += g.vertices.length;
+  totalOutT += g.triangles.length;
+  outOffset += g.vertices.length;
 }
 
 console.log(`\nTotal: ${totalSrcV.toLocaleString()}v/${totalSrcT.toLocaleString()}t -> ${totalOutV.toLocaleString()}v/${totalOutT.toLocaleString()}t`);

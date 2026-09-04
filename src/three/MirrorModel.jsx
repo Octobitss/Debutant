@@ -4,11 +4,15 @@ import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 import MirrorGlass from "./MirrorGlass.jsx";
 
-export default function MirrorModel({ position = [0, 0, 0], scale = 3.6, progressRef, computeState }) {
-  const obj = useLoader(OBJLoader, "/assets/3d/mirror-decimated.obj");
+export default function MirrorModel({ position = [0, 0, 0], scale = 0.4, progressRef, computeState }) {
+  const obj = useLoader(OBJLoader, "/assets/3d/mirror-frame-decimated.obj");
 
   const model = useMemo(() => {
     const clone = obj.clone(true);
+    const box = new THREE.Box3().setFromObject(clone);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    clone.position.sub(center);
     clone.traverse((child) => {
       if (child.isMesh) {
         child.material = new THREE.MeshStandardMaterial({
