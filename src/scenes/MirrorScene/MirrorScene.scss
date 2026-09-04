@@ -1,0 +1,51 @@
+@use "../../styles/variables" as *;
+
+.mirror-scene {
+  position: relative;
+  min-height: 160vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mirror-scene__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 1.5rem;
+}
+
+.mirror-scene__heading {
+  margin-top: 0.4em;
+  font-size: $fs-hero-title;
+  background: linear-gradient(135deg, $color-dark-deep 10%, $color-dark 55%, $color-primary-dark 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 30px rgba(#fff, 0.3);
+}
+
+.mirror-scene__scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: $space-lg;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  color: $text-on-dark-muted;
+}
+
+.mirror-scene__scroll-cue span:first-child {
+  width: 1px;
+  height: 42px;
+  background: linear-gradient(180deg, rgba($color-champagne, 0.9), transparent);
+}
+
+.mirror-scene__scroll-cue span:last-child {
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}

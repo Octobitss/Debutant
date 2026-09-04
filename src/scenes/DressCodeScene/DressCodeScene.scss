@@ -1,0 +1,63 @@
+@use "../../styles/variables" as *;
+
+.dresscode-scene {
+  position: relative;
+  min-height: 130vh;
+  padding: $space-xl 1.5rem;
+}
+
+.dresscode-scene__header {
+  max-width: 640px;
+  margin: 0 auto $space-xl;
+  text-align: center;
+}
+
+.dresscode-scene__header p {
+  margin-top: $space-xs;
+  color: $text-on-dark-muted;
+  text-shadow: 0 2px 20px rgba(#000, 0.6);
+}
+
+.dresscode-scene__grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 6vw, 5rem);
+  margin-top: 20vh;
+}
+
+.dresscode-note {
+  text-align: center;
+  padding: $space-lg $space-md;
+  border-radius: 20px;
+  background: rgba($color-dark-deep, 0.35);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba($color-champagne, 0.15);
+}
+
+.dresscode-note__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: $color-secondary-light;
+}
+
+.dresscode-note__title {
+  margin-top: 0.3em;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.dresscode-note__copy {
+  margin-top: 0.5em;
+  font-size: 0.9rem;
+  // The note card has its own dark background — stays light on purpose.
+  color: $text-on-light-card-muted;
+}
+
+@media (max-width: $bp-tablet) {
+  .dresscode-scene__grid {
+    grid-template-columns: 1fr;
+    gap: $space-md;
+  }
+}

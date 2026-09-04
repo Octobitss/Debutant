@@ -1,0 +1,73 @@
+@use "../../styles/variables" as *;
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: $z-loading;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $gradient-garden;
+  overflow: hidden;
+  transition: opacity 0.7s ease, visibility 0.7s;
+}
+
+.loading-screen__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(#1f2a20, 0.72) 0%, rgba(#241a24, 0.82) 65%, rgba(#100c10, 0.92) 100%),
+    url("/assets/images/loading-hero.webp") center 30% / cover no-repeat;
+}
+
+.loading-screen__content {
+  position: relative;
+}
+
+.loading-screen--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-screen__content {
+  text-align: center;
+}
+
+.loading-screen__ring {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto $space-md;
+  border-radius: 50%;
+  border: 1px solid rgba($color-champagne, 0.25);
+  border-top-color: $color-champagne;
+  animation: loading-spin 2.2s linear infinite;
+}
+
+.loading-screen__title {
+  font-family: $font-display;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  letter-spacing: 0.08em;
+  color: $color-cream;
+}
+
+.loading-screen__subtitle {
+  margin-top: $space-xs;
+  font-size: 0.78rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  // Sits over its own dark photo backdrop — stays light on purpose.
+  color: $text-on-light-card-muted;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen__ring {
+    animation: none;
+  }
+}

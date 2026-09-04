@@ -1,0 +1,63 @@
+@use "../../styles/variables" as *;
+
+.rsvp-scene {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(#{$space-xl} + 3rem) 1.5rem $space-xl;
+  text-align: center;
+}
+
+.rsvp-scene__date,
+.rsvp-scene__title,
+.rsvp-scene__copy,
+.rsvp-scene__time,
+.rsvp-scene__note {
+  text-shadow: 0 2px 24px rgba(#fff, 0.35);
+}
+
+.rsvp-scene__date {
+  margin-top: 0.4em;
+  font-size: clamp(2.6rem, 8vw, 5.5rem);
+  background: linear-gradient(135deg, $color-dark-deep 10%, $color-dark 60%, $color-primary-dark 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rsvp-scene__time {
+  margin-top: $space-xs;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $text-on-dark-muted;
+}
+
+.rsvp-scene__title {
+  margin-top: $space-xl;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+}
+
+.rsvp-scene__copy {
+  margin: $space-sm auto 0;
+  max-width: 42ch;
+  color: $text-on-dark-muted;
+}
+
+.rsvp-scene__cta {
+  margin-top: $space-lg;
+  padding: 1.15em 3.6em;
+  font-size: 0.85rem;
+}
+
+.rsvp-scene__note {
+  margin-top: $space-md;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: $text-on-dark-muted;
+  opacity: 0.75;
+}

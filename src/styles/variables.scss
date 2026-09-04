@@ -1,0 +1,76 @@
+// ==========================================================================
+// Design tokens — Where Eighteen Blooms
+// ==========================================================================
+
+// Core palette (carried forward from the brand system already established)
+$color-primary: #925a5d; // dusty rose
+$color-secondary: #cc96bb; // orchid pink
+$color-dark: #4e3b4a; // deep plum
+
+$color-primary-light: #b98588;
+$color-primary-dark: #6f4245;
+$color-secondary-light: #e3bfd8;
+$color-secondary-dark: #a3729a;
+$color-dark-light: #6b5264;
+$color-dark-deep: #241a24;
+
+$color-blush: #f3e4e8;
+$color-cream: #f8ece7;
+$color-gold: #cdb08a;
+$color-gold-soft: #e4d3ad;
+
+// New accents for the mirror/garden theme
+$color-champagne: #e9d9b8;
+$color-mirror-glass: #dce8e4;
+$color-garden-deep: #1f2a20;
+$color-garden-moss: #3a4a3a;
+
+// Named for the original dark-background design; the scene background is
+// now much lighter overall, so these read dark for contrast. The handful
+// of elements that still sit on their own dark pill/card (FixedCountdown,
+// SoundToggle, LoadingScreen, dresscode/map notes) explicitly override
+// back to a light color where they're defined.
+$text-on-dark: rgba(#3a2432, 0.9);
+$text-on-dark-muted: rgba(#3a2432, 0.68);
+$text-on-light-card: rgba(#f8ece7, 0.85);
+$text-on-light-card-muted: rgba(#f3e4e8, 0.65);
+
+$gradient-twilight: linear-gradient(180deg, #241a24 0%, #4e3b4a 45%, #6f4a5c 100%);
+$gradient-garden: linear-gradient(180deg, #1f2a20 0%, #2c3a2c 55%, #4e3b4a 100%);
+$gradient-rose: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+$gradient-glow: radial-gradient(circle at 50% 30%, rgba($color-secondary, 0.35), rgba($color-dark, 0) 70%);
+$gradient-mirror: radial-gradient(circle at 50% 40%, rgba($color-mirror-glass, 0.5), rgba($color-dark-deep, 0.05) 70%);
+
+// Typography
+$font-display: "Fraunces", "Times New Roman", serif;
+$font-body: "Urbanist", -apple-system, BlinkMacSystemFont, sans-serif;
+
+$fs-hero-title: clamp(2.8rem, 8vw, 6rem);
+$fs-section-title: clamp(2rem, 5.5vw, 3.6rem);
+$fs-body: clamp(0.95rem, 1.4vw, 1.08rem);
+
+// Spacing
+$space-xs: 0.5rem;
+$space-sm: 1rem;
+$space-md: 2rem;
+$space-lg: 4rem;
+$space-xl: 7rem;
+
+// Motion
+$ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-soft: cubic-bezier(0.16, 0.84, 0.44, 1);
+$duration-fast: 0.4s;
+$duration-base: 0.9s;
+
+// Z-index scale
+$z-atmosphere: 1;
+$z-content: 10;
+$z-fixed-ui: 40;
+$z-loading: 90;
+
+// Breakpoints
+$bp-xs: 375px;
+$bp-sm: 414px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+$bp-wide: 1440px;

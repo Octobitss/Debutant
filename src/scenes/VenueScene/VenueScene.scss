@@ -1,0 +1,47 @@
+@use "../../styles/variables" as *;
+
+.venue-scene {
+  position: relative;
+  padding: $space-xl 0;
+}
+
+.venue-scene__header {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.venue-scene__header p {
+  margin-top: $space-xs;
+  color: $text-on-dark-muted;
+  text-shadow: 0 2px 20px rgba(#000, 0.6);
+}
+
+.venue-scene__meta {
+  margin-top: $space-sm !important;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $color-secondary-dark !important;
+}
+
+.venue-scene__spacer {
+  height: 55vh;
+}
+
+.venue-scene__map {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.venue-scene__map p {
+  margin-bottom: $space-sm;
+}
+
+.venue-scene__map .map-embed {
+  margin-top: $space-lg;
+  text-align: left;
+}

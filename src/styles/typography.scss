@@ -1,0 +1,33 @@
+@use "variables" as *;
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: $font-display;
+  font-weight: 500;
+  margin: 0;
+  color: $text-on-dark;
+}
+
+p {
+  margin: 0;
+  font-family: $font-body;
+}
+
+.section-kicker {
+  display: inline-block;
+  font-family: $font-body;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: $color-dark;
+  text-shadow: 0 1px 12px rgba(#fff, 0.4);
+}
+
+.section-title {
+  font-size: $fs-section-title;
+  font-weight: 500;
+  color: $color-dark-deep;
+}

@@ -1,8 +1,8 @@
-# Trina's XVIII — Wildest Dreams
+# Where Eighteen Blooms
 
-An interactive, cinematic debut invitation website: a tearable paper entrance built in
-Three.js/WebGL, a persistent floating-petal atmosphere, scroll-driven camera movement,
-and a full storytelling flow from countdown to RSVP.
+A cinematic, scroll-driven React invitation for Trina's 18th birthday: approach a mirror, step
+through it into a whimsical memory garden, and journey through the venue, dress code, date and
+RSVP to a final closing scene.
 
 ## Getting started
 
@@ -11,67 +11,58 @@ npm install
 npm run dev
 ```
 
-Opens the site at `http://localhost:5173` with hot reload (Vite).
-
-## Other commands
+Opens at `http://localhost:5173` with hot reload (Vite).
 
 | Command | What it does |
 | --- | --- |
-| `npm run build` | Production build via Vite → `dist-vite/` |
-| `npm run preview` | Serve the Vite production build locally |
+| `npm run dev` | Local dev server |
+| `npm run build` | Production build → `dist/` |
+| `npm run preview` | Serve the production build locally |
 | `npm run placeholders` | Regenerate the placeholder WebP art in `public/assets/images/` |
-| `npm run gulp:build` | Compile SCSS → `dist/main.min.css` and bundle/minify JS → `dist/main.min.js`, copy assets, emit a static `dist/index.html` |
-| `npm run gulp:watch` (or `npx gulp watch`) | Same as above, then watches `src/scss`, `src/js`, `public/assets`, and `index.html` for changes |
 
-Both build paths are independent: `npm run dev`/`build` works straight off `src/` for day-to-day
-development, while the Gulp pipeline produces a fully static `dist/` folder (no build tooling
-required to host it) for simple deployments.
+## How the scroll journey works
+
+- **Lenis** smooths the scroll and feeds it into **GSAP's** ticker, which keeps **ScrollTrigger**
+  in sync (`src/hooks/useLenis.js`). Disabled entirely under `prefers-reduced-motion` — the site
+  falls back to plain native scroll with all content immediately visible.
+- The Mirror and Garden scenes are pinned (`ScrollTrigger` with `pin: true, scrub: 1`) so their
+  internal timelines play out at a fixed scroll position before releasing to the next scene.
+  Venue, Dress Code, RSVP and Outro use lighter scroll-triggered reveals as they scroll into view,
+  no pinning.
+- The mirror-portal transition (the "walking through the mirror" moment) is the only place using
+  real 3D — a small React Three Fiber scene (`src/scenes/MirrorScene/MirrorPortalCanvas.jsx`) with
+  a custom glass-distortion shader, code-split via `React.lazy` so it only loads once a visitor
+  actually scrolls there. Everywhere else is CSS/GSAP-driven for reliability and performance.
 
 ## Editing content
 
-Everything content-related lives in one place: **[src/js/config.js](src/js/config.js)**.
-
-```js
-export const SITE_CONFIG = {
-  debutantName: "Trina",
-  title: "Trina's XVIII",
-  subtitle: "Wildest Dreams",
-  tagline: "A Night of Fairy Tales and Endless Memories",
-  event: { date: "2026-12-12T18:00:00+08:00", displayDate: "...", displayTime: "..." },
-  venue: { name: "...", address: "...", latitude: null, longitude: null },
-  rsvp: { url: "https://forms.gle/jcm1jQLy4WrLwLaUA" }
-};
-```
-
-Changing `event.date`/`displayDate`/`displayTime`, `venue.name`/`address`, or `rsvp.url` updates
-the countdown, the hero/venue/maps text, and the RSVP button everywhere at once — those elements
-are bound at runtime via `data-bind="event.displayDate"` / `data-bind-href="rsvp.url"` attributes
-in `index.html`.
+Everything lives in **[src/config/siteConfig.js](src/config/siteConfig.js)** — debutant name,
+event date/venue, RSVP link, dress code copy, and the garden letter text. Changing `event.date`
+updates the fixed countdown everywhere automatically.
 
 ## Replacing images
 
-All imagery lives in `public/assets/images/` and is referenced by stable filenames, so swapping
-in real photography is just overwriting the file — no code changes needed:
+All imagery is in `public/assets/images/`, referenced by stable filenames — overwrite them with
+real photography, no code changes needed:
 
-- `debutant-placeholder.webp` — hero portrait (3:4)
+- `debutante-portrait.webp` — the portrait inside the mirror (3:4)
 - `venue-1.webp`, `venue-2.webp`, `venue-3.webp` — venue gallery
-- `dresscode-girls.webp`, `dresscode-boys.webp` — dress code cards (3:4)
-- `floral-1.webp`, `floral-3.webp` — transparent corner flourishes
-- `floral-2.webp` — story section image (4:5)
-- `invitation-cover.webp` — the tearable entrance artwork
+- `dresscode-women.webp`, `dresscode-men.webp` — dress code cards (3:4)
 
-Run `npm run placeholders` any time to regenerate the current placeholder set (defined in
-`scripts/generate-placeholders.mjs`) if you want to tweak the stand-in art itself.
+Run `npm run placeholders` any time to regenerate the current placeholder set from
+`scripts/generate-placeholders.mjs` if you want to tweak the stand-in art itself.
 
 ## Google Maps
 
-Drop your embed iframe straight into `index.html` inside `<div id="google-map">`. The "See My
-Location" and "Get Directions" buttons work without any API key (they use the Geolocation API and
-a Google Maps directions URL); `SITE_CONFIG.maps.apiKey` is reserved if you later want to upgrade
-to live ETAs via the Distance Matrix API.
+Drop your embed iframe into `src/components/ui/MapEmbed.jsx` inside `<div id="google-map">`.
+"Open in Google Maps" and "Check My Location" work without any API key — the latter uses the
+Geolocation API and a clearly-labeled straight-line distance estimate. Set
+`VITE_GOOGLE_MAPS_API_KEY` (copy `.env.example` to `.env`) to upgrade that estimate to a real
+driving-time via Google's Distance Matrix API; set `SITE_CONFIG.venue.latitude/longitude` in
+`siteConfig.js` for either mode to compute a distance at all.
 
 ## Background music
 
-Disabled by default. Set `AUDIO_CONFIG.enabled = true` in `src/js/config.js` and point `source` at
-a licensed audio file under `public/assets/audio/` — playback only ever starts from a real user
-gesture (the entrance tear/tap), never automatically.
+Disabled by default (`AUDIO_CONFIG.enabled` in `siteConfig.js`). Set it to `true` and point
+`source` at a licensed audio file to reveal the sound toggle — playback only ever starts from that
+toggle's click, never automatically.

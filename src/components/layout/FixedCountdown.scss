@@ -1,0 +1,61 @@
+@use "../../styles/variables" as *;
+
+.fixed-countdown {
+  position: fixed;
+  top: clamp(0.75rem, 2vh, 1.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: $z-fixed-ui;
+  pointer-events: none;
+  padding: 0.5em 1.1em;
+  border-radius: 999px;
+  // Deliberately near-opaque: scrolling text passes behind the fixed
+  // header constantly, and a translucent pill lets it show through and
+  // garble with the countdown digits.
+  background: rgba($color-dark-deep, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba($color-champagne, 0.22);
+  box-shadow: 0 8px 24px -8px rgba(#000, 0.5);
+}
+
+.fixed-countdown__list {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(0.6rem, 2vw, 1.2rem);
+}
+
+.fixed-countdown__list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+
+.fixed-countdown__value {
+  font-family: $font-display;
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  color: $color-cream;
+  font-variant-numeric: tabular-nums;
+}
+
+.fixed-countdown__label {
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  // The pill itself has a near-opaque dark background, unlike most text
+  // in the scene — stays light on purpose.
+  color: $text-on-light-card-muted;
+}
+
+.fixed-countdown__complete {
+  font-family: $font-display;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: $color-secondary-light;
+}
+
+@media (max-width: $bp-xs) {
+  .fixed-countdown {
+    top: 0.5rem;
+    padding: 0.4em 0.8em;
+  }
+}

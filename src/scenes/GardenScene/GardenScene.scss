@@ -1,0 +1,43 @@
+@use "../../styles/variables" as *;
+
+.garden-scene {
+  position: relative;
+  min-height: 180vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $space-xl 1.5rem;
+}
+
+.garden-scene__kicker {
+  margin-bottom: $space-lg;
+}
+
+.garden-scene__letter {
+  width: min(680px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 28vh;
+  padding-bottom: 10vh;
+}
+
+.garden-scene__paragraph,
+.garden-scene__signoff {
+  text-align: center;
+  font-family: $font-display;
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  line-height: 1.5;
+  color: $color-dark-deep;
+  text-shadow: 0 2px 24px rgba(#fff, 0.35);
+}
+
+.garden-scene__signoff {
+  font-style: italic;
+  color: $color-primary-dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-scene__letter {
+    gap: $space-lg;
+  }
+}

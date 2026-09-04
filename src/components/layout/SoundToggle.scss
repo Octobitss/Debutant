@@ -1,0 +1,24 @@
+@use "../../styles/variables" as *;
+
+.sound-toggle {
+  position: fixed;
+  top: clamp(0.75rem, 2vh, 1.5rem);
+  right: clamp(0.75rem, 3vw, 1.75rem);
+  z-index: $z-fixed-ui;
+  padding: 0.5em 1em;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  // Own dark pill background — stays light on purpose.
+  color: $text-on-light-card-muted;
+  background: rgba($color-dark-deep, 0.35);
+  border: 1px solid rgba($color-champagne, 0.18);
+  backdrop-filter: blur(8px);
+  transition: color $duration-fast $ease-soft, border-color $duration-fast $ease-soft;
+}
+
+.sound-toggle--playing {
+  color: $color-champagne;
+  border-color: rgba($color-champagne, 0.5);
+}
