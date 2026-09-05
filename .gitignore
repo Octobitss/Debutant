@@ -6,4 +6,3 @@ dist-vite/
 .vscode/
 .env
 .env.local
-assets/
