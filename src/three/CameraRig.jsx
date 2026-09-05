@@ -22,6 +22,12 @@ function sampleStops(progress) {
 
 const tmpLook = new THREE.Vector3();
 
+function widenFovForNarrowAspect(fov, aspect) {
+  if (aspect >= 1) return fov;
+  const widen = THREE.MathUtils.clamp((1 - aspect) * 35, 0, 30);
+  return Math.min(fov + widen, 82);
+}
+
 export default function CameraRig({ progressRef, reducedMotion }) {
   const { camera } = useThree();
 
@@ -35,7 +41,7 @@ export default function CameraRig({ progressRef, reducedMotion }) {
     const lookX = lerp(a.look[0], b.look[0], localT);
     const lookY = lerp(a.look[1], b.look[1], localT);
     const lookZ = lerp(a.look[2], b.look[2], localT);
-    const fov = lerp(a.fov, b.fov, localT);
+    const fov = widenFovForNarrowAspect(lerp(a.fov, b.fov, localT), camera.aspect);
 
     camera.position.lerp(new THREE.Vector3(posX, posY, posZ), 0.12);
     tmpLook.set(lookX, lookY, lookZ);

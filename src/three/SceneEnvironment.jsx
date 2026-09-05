@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
 import CameraRig from "./CameraRig.jsx";
 import MirrorMesh from "./MirrorMesh.jsx";
@@ -11,7 +11,7 @@ import DebutanteGallery from "./DebutanteGallery.jsx";
 import Pillars from "./Pillars.jsx";
 import CloudField from "./CloudField.jsx";
 import OldTree from "./OldTree.jsx";
-import FallingPetals from "./FallingPetals.jsx";
+import FallingLilies from "./FallingLilies.jsx";
 import { DEPTHS } from "./cameraPath.js";
 
 const FOG_STOPS = [
@@ -54,6 +54,20 @@ function FogController({ progressRef }) {
   return null;
 }
 
+function DeferredMount({ children }) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const schedule = window.requestIdleCallback || ((cb) => setTimeout(cb, 600));
+    const cancel = window.cancelIdleCallback || clearTimeout;
+    const id = schedule(() => setReady(true), { timeout: 1200 });
+    return () => cancel(id);
+  }, []);
+
+  if (!ready) return null;
+  return children;
+}
+
 function SceneContents({ progressRef, reducedMotion }) {
   return (
     <>
@@ -87,12 +101,16 @@ function SceneContents({ progressRef, reducedMotion }) {
           })}
         />
 
-        {!reducedMotion && <OceanFloor />}
-        {!reducedMotion && <WaterLilyScatter zStart={DEPTHS.gardenStart + 8} zEnd={-58} />}
-        {!reducedMotion && <Pillars />}
-        {!reducedMotion && <OldTree />}
-        {!reducedMotion && <CloudField />}
-        {!reducedMotion && <FallingPetals />}
+        {!reducedMotion && (
+          <DeferredMount>
+            <OceanFloor />
+            <WaterLilyScatter zStart={DEPTHS.gardenStart + 8} zEnd={-58} />
+            <Pillars />
+            <OldTree />
+            <CloudField />
+            <FallingLilies />
+          </DeferredMount>
+        )}
         <DebutanteGallery progressRef={progressRef} />
 
         <PhotoPlane

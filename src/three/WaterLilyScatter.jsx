@@ -1,6 +1,5 @@
 import { useLoader } from "@react-three/fiber";
-import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 
@@ -84,19 +83,17 @@ function LilyPart({ geometry, color, normalize, instances }) {
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
-  useFrame(({ clock }) => {
+  useEffect(() => {
     if (!meshRef.current) return;
-    const t = clock.elapsedTime;
     instances.forEach((inst, i) => {
-      const bob = Math.sin(t * inst.speed + inst.phase) * 0.02;
-      dummy.position.set(inst.x, inst.y + bob, inst.z);
+      dummy.position.set(inst.x, inst.y, inst.z);
       dummy.rotation.set(0, inst.rotY, 0);
       dummy.scale.setScalar(normalize * inst.scale);
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
-  });
+  }, [instances, normalize, dummy]);
 
   return (
     <instancedMesh ref={meshRef} args={[geometry, null, instances.length]} frustumCulled={false}>
@@ -111,7 +108,7 @@ export default function WaterLilyScatter({ xSpread = 21, zStart = 4, zEnd = -58,
 
   const instances = useMemo(
     () =>
-      Array.from({ length: INSTANCE_COUNT }, (_, i) => {
+      Array.from({ length: INSTANCE_COUNT }, () => {
         const x = (Math.random() - 0.5) * xSpread * 2;
         const z = zStart + Math.random() * (zEnd - zStart);
         return {
@@ -119,9 +116,7 @@ export default function WaterLilyScatter({ xSpread = 21, zStart = 4, zEnd = -58,
           z,
           y: sampleFloorHeight(x, z) + surfaceLift,
           rotY: Math.random() * Math.PI * 2,
-          scale: 0.6 + Math.random() * 0.9,
-          speed: 0.1 + Math.random() * 0.2,
-          phase: i * 1.1
+          scale: 0.6 + Math.random() * 0.9
         };
       }),
     [xSpread, zStart, zEnd, surfaceLift, sampleFloorHeight]

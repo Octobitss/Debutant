@@ -1,5 +1,5 @@
 import { useLoader } from "@react-three/fiber";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 
@@ -30,14 +30,23 @@ function useTreeParts() {
   }, [obj]);
 }
 
-function TreeInstance({ parts, position, scale, rotationY }) {
-  return (
-    <group position={position} scale={scale} rotation={[0, rotationY, 0]}>
-      {parts.map((part, i) => (
-        <mesh key={i} geometry={part.geometry} material={part.material} />
-      ))}
-    </group>
-  );
+function TreePartInstanced({ geometry, material, placements }) {
+  const meshRef = useRef(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+    placements.forEach((placement, i) => {
+      dummy.position.set(...placement.position);
+      dummy.rotation.set(0, placement.rotationY, 0);
+      dummy.scale.setScalar(placement.scale);
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+    });
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  }, [placements, dummy]);
+
+  return <instancedMesh ref={meshRef} args={[geometry, material, placements.length]} frustumCulled={false} />;
 }
 
 export default function OldTree({ groundY = -2.7 }) {
@@ -45,12 +54,16 @@ export default function OldTree({ groundY = -2.7 }) {
 
   const placements = useMemo(
     () => [
+      { position: [-10.5, groundY, 2], scale: 1.1, rotationY: 0.9 },
+      { position: [10.5, groundY, 2], scale: 1.15, rotationY: -2.2 },
       { position: [-10.5, groundY, -3], scale: 1.15, rotationY: 0.4 },
       { position: [10.5, groundY, -3], scale: 1.05, rotationY: -0.6 },
       { position: [-10.5, groundY, -14], scale: 1.1, rotationY: 2.0 },
       { position: [10.5, groundY, -14], scale: 1.15, rotationY: 2.6 },
       { position: [-10.5, groundY, -25], scale: 1.1, rotationY: 1.1 },
-      { position: [10.5, groundY, -25], scale: 1.2, rotationY: -1.4 }
+      { position: [10.5, groundY, -25], scale: 1.2, rotationY: -1.4 },
+      { position: [-10.5, groundY, -36], scale: 1.05, rotationY: -1.8 },
+      { position: [10.5, groundY, -36], scale: 1.1, rotationY: 0.7 }
     ],
     [groundY]
   );
@@ -59,14 +72,8 @@ export default function OldTree({ groundY = -2.7 }) {
 
   return (
     <group>
-      {placements.map((placement, i) => (
-        <TreeInstance
-          key={i}
-          parts={parts}
-          position={placement.position}
-          scale={placement.scale}
-          rotationY={placement.rotationY}
-        />
+      {parts.map((part, i) => (
+        <TreePartInstanced key={i} geometry={part.geometry} material={part.material} placements={placements} />
       ))}
     </group>
   );

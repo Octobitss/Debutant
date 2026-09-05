@@ -3,45 +3,50 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 
-const PETAL_URL = "/assets/3d/petal-decimated.obj";
-const PALETTE = ["#e9c3d6", "#c98fa8", "#f3e3cf", "#b5678a"];
-const INSTANCES_PER_VARIANT = 22;
-const TARGET_SIZE = 0.3;
+const LILY_URL = "/assets/3d/pink_lily_flower.obj";
+const COUNT = 100;
+const TARGET_SIZE = 0.35;
 const X_SPREAD = 11;
 const Y_SPREAD = 14;
 const Z_AHEAD = 13;
 const Z_BEHIND = 3;
+const COLOR = "#e78bb0";
 
-function useVariantGeometries() {
-  const obj = useLoader(OBJLoader, PETAL_URL);
+function useLilyGeometry() {
+  const obj = useLoader(OBJLoader, LILY_URL);
   return useMemo(() => {
-    const geoms = [];
+    let geometry = null;
     obj.traverse((child) => {
-      if (child.isMesh && child.name.startsWith("petal")) {
-        const geo = child.geometry.clone();
-        geo.computeBoundingBox();
-        const size = new THREE.Vector3();
-        geo.boundingBox.getSize(size);
-        const maxDim = Math.max(size.x, size.y, size.z) || 1;
-        const center = new THREE.Vector3();
-        geo.boundingBox.getCenter(center);
-        geo.translate(-center.x, -center.y, -center.z);
-        geo.computeVertexNormals();
-        geoms.push({ geometry: geo, normalize: TARGET_SIZE / maxDim });
-      }
+      if (child.isMesh && !geometry) geometry = child.geometry.clone();
     });
-    return geoms;
+    if (!geometry) return null;
+    geometry.computeBoundingBox();
+    const size = new THREE.Vector3();
+    geometry.boundingBox.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const center = new THREE.Vector3();
+    geometry.boundingBox.getCenter(center);
+    geometry.translate(-center.x, -center.y, -center.z);
+    geometry.computeVertexNormals();
+    geometry.userData.normalize = TARGET_SIZE / maxDim;
+    return geometry;
   }, [obj]);
 }
 
-function FallingPetalVariant({ geometry, normalize, color, seed }) {
+export default function FallingLilies() {
   const { camera } = useThree();
+  const geometry = useLilyGeometry();
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
+  const material = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: COLOR, roughness: 0.55, metalness: 0.05, side: THREE.DoubleSide }),
+    []
+  );
+
   const instances = useMemo(
     () =>
-      Array.from({ length: INSTANCES_PER_VARIANT }, (_, i) => ({
+      Array.from({ length: COUNT }, (_, i) => ({
         x: (Math.random() - 0.5) * X_SPREAD * 2,
         y: (Math.random() - 0.5) * Y_SPREAD,
         z: (Math.random() - 0.5) * (Z_AHEAD + Z_BEHIND),
@@ -49,10 +54,10 @@ function FallingPetalVariant({ geometry, normalize, color, seed }) {
         rotPhase: [Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2],
         fallSpeed: 0.15 + Math.random() * 0.25,
         sway: 0.2 + Math.random() * 0.3,
-        swayPhase: (i + seed) * 0.9,
-        scale: normalize * (0.7 + Math.random() * 0.6)
+        swayPhase: i * 0.9,
+        scale: (geometry?.userData.normalize || 1) * (0.7 + Math.random() * 0.6)
       })),
-    [normalize, seed]
+    [geometry]
   );
 
   useFrame((state, delta) => {
@@ -83,29 +88,7 @@ function FallingPetalVariant({ geometry, normalize, color, seed }) {
     meshRef.current.instanceMatrix.needsUpdate = true;
   });
 
-  return (
-    <instancedMesh ref={meshRef} args={[geometry, null, INSTANCES_PER_VARIANT]} frustumCulled={false}>
-      <meshStandardMaterial color={color} roughness={0.6} metalness={0.05} side={THREE.DoubleSide} />
-    </instancedMesh>
-  );
-}
+  if (!geometry) return null;
 
-export default function FallingPetals() {
-  const variants = useVariantGeometries();
-
-  if (!variants.length) return null;
-
-  return (
-    <group>
-      {variants.map((variant, index) => (
-        <FallingPetalVariant
-          key={index}
-          geometry={variant.geometry}
-          normalize={variant.normalize}
-          color={PALETTE[index % PALETTE.length]}
-          seed={index * 7}
-        />
-      ))}
-    </group>
-  );
+  return <instancedMesh ref={meshRef} args={[geometry, material, COUNT]} frustumCulled={false} />;
 }
