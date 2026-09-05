@@ -1,6 +1,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
 import CameraRig from "./CameraRig.jsx";
 import MirrorMesh from "./MirrorMesh.jsx";
 import MirrorModel from "./MirrorModel.jsx";
@@ -151,14 +152,16 @@ function SceneContents({ progressRef, reducedMotion }) {
 }
 
 export default function SceneEnvironment({ progressRef, reducedMotion }) {
+  const isMobile = useIsMobileViewport();
+
   if (reducedMotion) return null;
 
   return (
     <Canvas
       className="scene-environment"
       camera={{ position: [0, 0, 8], fov: 42, near: 0.1, far: 100 }}
-      dpr={[1, 1.75]}
-      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+      dpr={isMobile ? [1, 1.3] : [1, 1.75]}
+      gl={{ antialias: !isMobile, alpha: false, powerPreference: "high-performance" }}
     >
       <SceneContents progressRef={progressRef} reducedMotion={reducedMotion} />
     </Canvas>

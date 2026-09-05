@@ -15,6 +15,24 @@ export const CAMERA_STOPS = [
   { t: 1.0, pos: [0, 1.6, -66], look: [0, 0.9, -74], fov: 38 }
 ];
 
+// Mobile-only: on a narrow viewport the stock path above yaws away from the dress-code
+// photos right as it passes closest to them, so they only ever show as a cropped sliver
+// at the frame edge. These replace the t=0.787/0.83/0.887 stops with a pass that keeps
+// the camera farther from each photo (so a smaller, gentler turn still frames it) and
+// spreads the turn between them over more scroll distance, instead of a fast whip-pan
+// that swings far enough to glimpse the (mirrored) back of a photo plane.
+const MOBILE_DRESSCODE_STOPS = [
+  { t: 0.787, pos: [0.6, 0.25, -41], look: [-0.2, 0.22, -46], fov: 50 },
+  { t: 0.83, pos: [-0.6, 0.3, -44], look: [-0.9, 0.27, -48], fov: 54 },
+  { t: 0.887, pos: [0.5, 0.35, -45.5], look: [0.7, 0.33, -52], fov: 52 }
+];
+
+const REPLACED_TS = new Set([0.787, 0.83, 0.887]);
+
+export const CAMERA_STOPS_MOBILE = [...CAMERA_STOPS.filter((s) => !REPLACED_TS.has(s.t)), ...MOBILE_DRESSCODE_STOPS].sort(
+  (a, b) => a.t - b.t
+);
+
 export const DEPTHS = {
   mirror: 0,
   gardenStart: -4,

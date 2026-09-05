@@ -3,9 +3,11 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 import useFloorHeightSampler from "./useFloorHeight.js";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
 
 const LILY_URL = "/assets/3d/Water Lily.obj";
 const INSTANCE_COUNT = 720;
+const INSTANCE_COUNT_MOBILE = 360;
 const TARGET_SIZE = 0.7;
 const PAD_COLOR = "#3f6b3a";
 const BLOOM_COLOR = "#f6e3ea";
@@ -40,7 +42,7 @@ function useLilyParts() {
   }, [obj]);
 }
 
-function LilyPart({ geometry, color, normalize, instances }) {
+function LilyPart({ geometry, color, normalize, instances, isMobile }) {
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
@@ -54,11 +56,16 @@ function LilyPart({ geometry, color, normalize, instances }) {
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
+    meshRef.current.computeBoundingSphere();
   }, [instances, normalize, dummy]);
 
   return (
-    <instancedMesh ref={meshRef} args={[geometry, null, instances.length]} frustumCulled={false}>
-      <meshStandardMaterial color={color} roughness={0.65} metalness={0.02} side={THREE.DoubleSide} />
+    <instancedMesh ref={meshRef} args={[geometry, null, instances.length]}>
+      {isMobile ? (
+        <meshLambertMaterial color={color} side={THREE.DoubleSide} />
+      ) : (
+        <meshStandardMaterial color={color} roughness={0.65} metalness={0.02} side={THREE.DoubleSide} />
+      )}
     </instancedMesh>
   );
 }
@@ -66,10 +73,12 @@ function LilyPart({ geometry, color, normalize, instances }) {
 export default function WaterLilyScatter({ xSpread = 21, zStart = 4, zEnd = -58, surfaceLift = 0.03 }) {
   const { parts, normalize } = useLilyParts();
   const sampleFloorHeight = useFloorHeightSampler();
+  const isMobile = useIsMobileViewport();
+  const instanceCount = isMobile ? INSTANCE_COUNT_MOBILE : INSTANCE_COUNT;
 
   const instances = useMemo(
     () =>
-      Array.from({ length: INSTANCE_COUNT }, () => {
+      Array.from({ length: instanceCount }, () => {
         const x = (Math.random() - 0.5) * xSpread * 2;
         const z = zStart + Math.random() * (zEnd - zStart);
         return {
@@ -80,7 +89,7 @@ export default function WaterLilyScatter({ xSpread = 21, zStart = 4, zEnd = -58,
           scale: 0.6 + Math.random() * 0.9
         };
       }),
-    [xSpread, zStart, zEnd, surfaceLift, sampleFloorHeight]
+    [instanceCount, xSpread, zStart, zEnd, surfaceLift, sampleFloorHeight]
   );
 
   if (!parts.length) return null;
@@ -88,7 +97,14 @@ export default function WaterLilyScatter({ xSpread = 21, zStart = 4, zEnd = -58,
   return (
     <group>
       {parts.map((part, index) => (
-        <LilyPart key={index} geometry={part.geometry} color={part.color} normalize={normalize} instances={instances} />
+        <LilyPart
+          key={index}
+          geometry={part.geometry}
+          color={part.color}
+          normalize={normalize}
+          instances={instances}
+          isMobile={isMobile}
+        />
       ))}
     </group>
   );

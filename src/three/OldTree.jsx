@@ -2,16 +2,22 @@ import { useLoader } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
 
 const TREE_URL = "/assets/3d/old-tree-decimated.obj";
 
 const MATERIAL_FACTORIES = {
-  "Tree_Плоскость": () => new THREE.MeshStandardMaterial({ color: "#5a4335", roughness: 0.85, metalness: 0.02 }),
-  "BRANCH.001_Плоскость.003": () =>
-    new THREE.MeshStandardMaterial({ color: "#e8a9c4", roughness: 0.75, metalness: 0, side: THREE.DoubleSide })
+  "Tree_Плоскость": (isMobile) =>
+    isMobile
+      ? new THREE.MeshLambertMaterial({ color: "#5a4335" })
+      : new THREE.MeshStandardMaterial({ color: "#5a4335", roughness: 0.85, metalness: 0.02 }),
+  "BRANCH.001_Плоскость.003": (isMobile) =>
+    isMobile
+      ? new THREE.MeshLambertMaterial({ color: "#e8a9c4", side: THREE.DoubleSide })
+      : new THREE.MeshStandardMaterial({ color: "#e8a9c4", roughness: 0.75, metalness: 0, side: THREE.DoubleSide })
 };
 
-function useTreeParts() {
+function useTreeParts(isMobile) {
   const obj = useLoader(OBJLoader, TREE_URL);
   return useMemo(() => {
     const box = new THREE.Box3().setFromObject(obj);
@@ -23,11 +29,11 @@ function useTreeParts() {
         child.geometry.translate(0, groundShift, 0);
         child.geometry.computeVertexNormals();
         const makeMaterial = MATERIAL_FACTORIES[child.name] || MATERIAL_FACTORIES["Tree_Плоскость"];
-        parts.push({ geometry: child.geometry, material: makeMaterial() });
+        parts.push({ geometry: child.geometry, material: makeMaterial(isMobile) });
       }
     });
     return parts;
-  }, [obj]);
+  }, [obj, isMobile]);
 }
 
 function TreePartInstanced({ geometry, material, placements }) {
@@ -44,35 +50,57 @@ function TreePartInstanced({ geometry, material, placements }) {
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
+    meshRef.current.computeBoundingSphere();
   }, [placements, dummy]);
 
-  return <instancedMesh ref={meshRef} args={[geometry, material, placements.length]} frustumCulled={false} />;
+  return <instancedMesh ref={meshRef} args={[geometry, material, placements.length]} />;
 }
 
-export default function OldTree({ groundY = -2.7 }) {
-  const parts = useTreeParts();
+const ALL_PLACEMENTS = [
+  [
+    { x: -10.5, z: 2, scale: 1.1, rotationY: 0.9 },
+    { x: 10.5, z: 2, scale: 1.15, rotationY: -2.2 }
+  ],
+  [
+    { x: -10.5, z: -3, scale: 1.15, rotationY: 0.4 },
+    { x: 10.5, z: -3, scale: 1.05, rotationY: -0.6 }
+  ],
+  [
+    { x: -10.5, z: -14, scale: 1.1, rotationY: 2.0 },
+    { x: 10.5, z: -14, scale: 1.15, rotationY: 2.6 }
+  ],
+  [
+    { x: -10.5, z: -25, scale: 1.1, rotationY: 1.1 },
+    { x: 10.5, z: -25, scale: 1.2, rotationY: -1.4 }
+  ],
+  [
+    { x: -10.5, z: -30, scale: 1.12, rotationY: 1.5 },
+    { x: 10.5, z: -30, scale: 1.08, rotationY: -0.3 }
+  ],
+  [
+    { x: -10.5, z: -36, scale: 1.05, rotationY: -1.8 },
+    { x: 10.5, z: -36, scale: 1.1, rotationY: 0.7 }
+  ],
+  [
+    { x: -10.5, z: -47, scale: 1.15, rotationY: 2.4 },
+    { x: 10.5, z: -47, scale: 1.1, rotationY: -1.9 }
+  ],
+  [
+    { x: -10.5, z: -58, scale: 1.05, rotationY: 0.6 },
+    { x: 10.5, z: -58, scale: 1.12, rotationY: -2.7 }
+  ]
+];
 
-  const placements = useMemo(
-    () => [
-      { position: [-10.5, groundY, 2], scale: 1.1, rotationY: 0.9 },
-      { position: [10.5, groundY, 2], scale: 1.15, rotationY: -2.2 },
-      { position: [-10.5, groundY, -3], scale: 1.15, rotationY: 0.4 },
-      { position: [10.5, groundY, -3], scale: 1.05, rotationY: -0.6 },
-      { position: [-10.5, groundY, -14], scale: 1.1, rotationY: 2.0 },
-      { position: [10.5, groundY, -14], scale: 1.15, rotationY: 2.6 },
-      { position: [-10.5, groundY, -25], scale: 1.1, rotationY: 1.1 },
-      { position: [10.5, groundY, -25], scale: 1.2, rotationY: -1.4 },
-      { position: [-10.5, groundY, -30], scale: 1.12, rotationY: 1.5 },
-      { position: [10.5, groundY, -30], scale: 1.08, rotationY: -0.3 },
-      { position: [-10.5, groundY, -36], scale: 1.05, rotationY: -1.8 },
-      { position: [10.5, groundY, -36], scale: 1.1, rotationY: 0.7 },
-      { position: [-10.5, groundY, -47], scale: 1.15, rotationY: 2.4 },
-      { position: [10.5, groundY, -47], scale: 1.1, rotationY: -1.9 },
-      { position: [-10.5, groundY, -58], scale: 1.05, rotationY: 0.6 },
-      { position: [10.5, groundY, -58], scale: 1.12, rotationY: -2.7 }
-    ],
-    [groundY]
-  );
+export default function OldTree({ groundY = -2.7 }) {
+  const isMobile = useIsMobileViewport();
+  const parts = useTreeParts(isMobile);
+
+  const placements = useMemo(() => {
+    const pairs = isMobile ? ALL_PLACEMENTS.filter((_, i) => i % 2 === 0) : ALL_PLACEMENTS;
+    return pairs
+      .flat()
+      .map(({ x, z, scale, rotationY }) => ({ position: [x, groundY, z], scale, rotationY }));
+  }, [groundY, isMobile]);
 
   if (!parts.length) return null;
 

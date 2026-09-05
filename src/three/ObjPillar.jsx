@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 import useFloorHeightSampler from "./useFloorHeight.js";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
 import { TABLE_HEIGHT } from "./SideTable.jsx";
 
 const DESKTOP_ASPECT = 1.6;
@@ -30,16 +31,13 @@ function usePillarGeometry() {
   }, [obj]);
 }
 
-function usePillarMaterial() {
+function usePillarMaterial(isMobile) {
   return useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
-        color: "#f6f2ea",
-        roughness: 0.75,
-        metalness: 0.02,
-        side: THREE.DoubleSide
-      }),
-    []
+      isMobile
+        ? new THREE.MeshLambertMaterial({ color: "#f6f2ea", side: THREE.DoubleSide })
+        : new THREE.MeshStandardMaterial({ color: "#f6f2ea", roughness: 0.75, metalness: 0.02, side: THREE.DoubleSide }),
+    [isMobile]
   );
 }
 
@@ -47,8 +45,9 @@ function usePillarMaterial() {
 // guaranteed to sink at least `sinkMargin` below the actual (uneven) terrain at (x, z) —
 // growing taller than `minScale` if the local ground dips lower than expected.
 export default function ObjPillar({ x, z, topY, minScale = 1, sinkMargin = 0.2, rotation = [0, 0, 0] }) {
+  const isMobile = useIsMobileViewport();
   const geometry = usePillarGeometry();
-  const material = usePillarMaterial();
+  const material = usePillarMaterial(isMobile);
   const sampleFloorHeight = useFloorHeightSampler();
   const { size: canvasSize } = useThree();
   const xScale = Math.min(1, canvasSize.width / canvasSize.height / DESKTOP_ASPECT);

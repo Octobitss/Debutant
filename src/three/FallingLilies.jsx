@@ -2,9 +2,11 @@ import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
 
 const LILY_URL = "/assets/3d/pink_lily_flower.obj";
 const COUNT = 100;
+const COUNT_MOBILE = 55;
 const TARGET_SIZE = 0.35;
 const X_SPREAD = 11;
 const Y_SPREAD = 14;
@@ -38,15 +40,20 @@ export default function FallingLilies() {
   const geometry = useLilyGeometry();
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
+  const isMobile = useIsMobileViewport();
+  const count = isMobile ? COUNT_MOBILE : COUNT;
 
   const material = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: COLOR, roughness: 0.55, metalness: 0.05, side: THREE.DoubleSide }),
-    []
+    () =>
+      isMobile
+        ? new THREE.MeshLambertMaterial({ color: COLOR, side: THREE.DoubleSide })
+        : new THREE.MeshStandardMaterial({ color: COLOR, roughness: 0.55, metalness: 0.05, side: THREE.DoubleSide }),
+    [isMobile]
   );
 
   const instances = useMemo(
     () =>
-      Array.from({ length: COUNT }, (_, i) => ({
+      Array.from({ length: count }, (_, i) => ({
         x: (Math.random() - 0.5) * X_SPREAD * 2,
         y: (Math.random() - 0.5) * Y_SPREAD,
         z: (Math.random() - 0.5) * (Z_AHEAD + Z_BEHIND),
@@ -57,7 +64,7 @@ export default function FallingLilies() {
         swayPhase: i * 0.9,
         scale: (geometry?.userData.normalize || 1) * (0.7 + Math.random() * 0.6)
       })),
-    [geometry]
+    [geometry, count]
   );
 
   useFrame((state, delta) => {
@@ -86,9 +93,10 @@ export default function FallingLilies() {
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
+    meshRef.current.computeBoundingSphere();
   });
 
   if (!geometry) return null;
 
-  return <instancedMesh ref={meshRef} args={[geometry, material, COUNT]} frustumCulled={false} />;
+  return <instancedMesh ref={meshRef} args={[geometry, material, count]} />;
 }

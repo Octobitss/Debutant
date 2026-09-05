@@ -87,5 +87,8 @@
 @media (max-width: $bp-sm) {
   .entourage-group__list {
     grid-template-columns: 1fr;
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
   }
 }

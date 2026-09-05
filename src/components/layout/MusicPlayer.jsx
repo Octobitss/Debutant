@@ -5,6 +5,8 @@ const TRACK_URL = "/assets/music/Sometimes.mp3";
 const ARTIST_IMAGE = "/assets/music/authorimage.png";
 const TRACK_TITLE = "Sometimes by Ariana Grande";
 const DEFAULT_VOLUME = 0.5;
+const MOBILE_QUERY = "(max-width: 640px)";
+const AUTO_COLLAPSE_DELAY_MS = 900;
 
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -19,6 +21,20 @@ export default function MusicPlayer() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(DEFAULT_VOLUME);
+  const [collapsed, setCollapsed] = useState(false);
+  const hasAutoCollapsed = useRef(false);
+
+  useEffect(() => {
+    if (!playing || hasAutoCollapsed.current) return undefined;
+    if (!window.matchMedia(MOBILE_QUERY).matches) return undefined;
+
+    const timer = window.setTimeout(() => {
+      hasAutoCollapsed.current = true;
+      setCollapsed(true);
+    }, AUTO_COLLAPSE_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [playing]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -87,6 +103,22 @@ export default function MusicPlayer() {
     setVolume(Number(event.target.value));
   };
 
+  if (collapsed) {
+    return (
+      <div className={`music-player music-player--collapsed${playing ? " music-player--playing" : ""}`}>
+        <audio ref={audioRef} src={TRACK_URL} preload="metadata" loop />
+        <button
+          type="button"
+          className="music-player__reveal"
+          onClick={() => setCollapsed(false)}
+          aria-label="Show music player"
+        >
+          <img className="music-player__art" src={ARTIST_IMAGE} alt="" aria-hidden="true" />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className={`music-player${playing ? " music-player--playing" : ""}`}>
       <audio ref={audioRef} src={TRACK_URL} preload="metadata" loop />
@@ -114,6 +146,21 @@ export default function MusicPlayer() {
             )}
           </button>
           <p className="music-player__title">{TRACK_TITLE}</p>
+          <button
+            type="button"
+            className="music-player__dismiss"
+            onClick={() => setCollapsed(true)}
+            aria-label="Minimize music player"
+          >
+            <svg viewBox="0 0 16 16" width="10" height="10" aria-hidden="true">
+              <path
+                d="M2 2l12 12M14 2L2 14"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
         </div>
 
         <div className="music-player__seek-row">

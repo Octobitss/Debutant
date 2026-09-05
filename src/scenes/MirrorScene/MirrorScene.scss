@@ -15,6 +15,17 @@
   padding: 0 1.5rem;
 }
 
+@media (max-width: $bp-tablet) {
+  .mirror-scene {
+    align-items: flex-start;
+  }
+
+  .mirror-scene__content {
+    margin-top: min(64vh, 520px);
+    margin-top: min(64svh, 520px);
+  }
+}
+
 .mirror-scene__heading {
   margin-top: 0.4em;
   display: flex;
@@ -74,6 +85,12 @@
   align-items: center;
   gap: 0.6em;
   color: $text-on-dark-muted;
+}
+
+@media (max-width: $bp-tablet) {
+  .mirror-scene__scroll-cue {
+    display: none;
+  }
 }
 
 .mirror-scene__scroll-cue span:first-child {

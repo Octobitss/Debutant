@@ -3,9 +3,11 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
 
 const CLOUDS_URL = "/assets/3d/LOW-POLY CLOUDS.obj";
 const INSTANCES_PER_VARIANT = 11;
+const INSTANCES_PER_VARIANT_MOBILE = 6;
 const TARGET_SIZE = 5;
 
 function useVariantGeometries() {
@@ -30,13 +32,13 @@ function useVariantGeometries() {
   }, [obj]);
 }
 
-function CloudVariant({ geometry, normalize, zStart, zEnd, seed }) {
+function CloudVariant({ geometry, normalize, zStart, zEnd, seed, instanceCount, isMobile }) {
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   const instances = useMemo(
     () =>
-      Array.from({ length: INSTANCES_PER_VARIANT }, (_, i) => ({
+      Array.from({ length: instanceCount }, (_, i) => ({
         x: (Math.random() - 0.5) * 42,
         z: zStart + Math.random() * (zEnd - zStart),
         y: 9 + Math.random() * 6,
@@ -45,7 +47,7 @@ function CloudVariant({ geometry, normalize, zStart, zEnd, seed }) {
         drift: 0.02 + Math.random() * 0.03,
         phase: (i + seed) * 1.3
       })),
-    [normalize, zStart, zEnd, seed]
+    [instanceCount, normalize, zStart, zEnd, seed]
   );
 
   useFrame(({ clock }) => {
@@ -60,17 +62,24 @@ function CloudVariant({ geometry, normalize, zStart, zEnd, seed }) {
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
+    meshRef.current.computeBoundingSphere();
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[geometry, null, INSTANCES_PER_VARIANT]} frustumCulled={false}>
-      <meshStandardMaterial color="#faf3f5" roughness={0.9} metalness={0} side={THREE.DoubleSide} />
+    <instancedMesh ref={meshRef} args={[geometry, null, instanceCount]}>
+      {isMobile ? (
+        <meshLambertMaterial color="#faf3f5" side={THREE.DoubleSide} />
+      ) : (
+        <meshStandardMaterial color="#faf3f5" roughness={0.9} metalness={0} side={THREE.DoubleSide} />
+      )}
     </instancedMesh>
   );
 }
 
 export default function CloudField({ zStart = 4, zEnd = -72 }) {
   const variants = useVariantGeometries();
+  const isMobile = useIsMobileViewport();
+  const instanceCount = isMobile ? INSTANCES_PER_VARIANT_MOBILE : INSTANCES_PER_VARIANT;
 
   if (!variants.length) return null;
 
@@ -84,6 +93,8 @@ export default function CloudField({ zStart = 4, zEnd = -72 }) {
           zStart={zStart}
           zEnd={zEnd}
           seed={index * 11}
+          instanceCount={instanceCount}
+          isMobile={isMobile}
         />
       ))}
     </group>

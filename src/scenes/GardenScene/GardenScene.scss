@@ -36,6 +36,26 @@
   color: $color-primary-dark;
 }
 
+// Mobile-only: these paragraphs can scroll directly over a busy gallery photo, where a plain
+// text-shadow isn't enough to stay legible. Desktop has more room around the text and doesn't
+// need it.
+@media (max-width: $bp-tablet) {
+  .garden-scene__paragraph,
+  .garden-scene__signoff {
+    color: $color-cream;
+    padding: $space-md clamp(1rem, 4vw, $space-lg);
+    border-radius: 20px;
+    background: rgba($color-dark-deep, 0.4);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba($color-champagne, 0.15);
+    text-shadow: none;
+  }
+
+  .garden-scene__signoff {
+    color: $color-secondary-light;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .garden-scene__letter {
     gap: $space-lg;

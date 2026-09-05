@@ -2,14 +2,15 @@ import { useLoader } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
 
 const CAPITAL_URL = "/assets/3d/pillar-decimated.obj";
 const SHAFT_RADIUS = 0.42;
 const SHAFT_HEIGHT = 6.4;
 const X_OFFSET = 9;
 
-function createFlutedShaftGeometry(radius, height, fluteCount = 20, fluteDepth = 0.05) {
-  const geo = new THREE.CylinderGeometry(radius, radius * 1.06, height, 96, 1, true);
+function createFlutedShaftGeometry(radius, height, radialSegments, fluteCount = 20, fluteDepth = 0.05) {
+  const geo = new THREE.CylinderGeometry(radius, radius * 1.06, height, radialSegments, 1, true);
   const pos = geo.attributes.position;
   const v = new THREE.Vector3();
   for (let i = 0; i < pos.count; i += 1) {
@@ -39,18 +40,19 @@ function useCapitalGeometry() {
 }
 
 export default function Pillars({ nearZ = 4, farZ = -62, spacing = 11, groundY = -1.5 }) {
+  const isMobile = useIsMobileViewport();
   const capitalGeometry = useCapitalGeometry();
-  const shaftGeometry = useMemo(() => createFlutedShaftGeometry(SHAFT_RADIUS, SHAFT_HEIGHT), []);
+  const shaftGeometry = useMemo(
+    () => createFlutedShaftGeometry(SHAFT_RADIUS, SHAFT_HEIGHT, isMobile ? 48 : 96),
+    [isMobile]
+  );
 
   const stoneMaterial = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
-        color: "#f6f2ea",
-        roughness: 0.75,
-        metalness: 0.02,
-        side: THREE.DoubleSide
-      }),
-    []
+      isMobile
+        ? new THREE.MeshLambertMaterial({ color: "#f6f2ea", side: THREE.DoubleSide })
+        : new THREE.MeshStandardMaterial({ color: "#f6f2ea", roughness: 0.75, metalness: 0.02, side: THREE.DoubleSide }),
+    [isMobile]
   );
 
   const capitalScale = (SHAFT_RADIUS * 2.3) / 40;
@@ -76,7 +78,11 @@ export default function Pillars({ nearZ = 4, farZ = -62, spacing = 11, groundY =
               />
               <mesh position={[0, baseY, 0]}>
                 <cylinderGeometry args={[SHAFT_RADIUS * 1.35, SHAFT_RADIUS * 1.5, 0.36, 32]} />
-                <meshStandardMaterial color="#f6f2ea" roughness={0.75} metalness={0.02} />
+                {isMobile ? (
+                  <meshLambertMaterial color="#f6f2ea" />
+                ) : (
+                  <meshStandardMaterial color="#f6f2ea" roughness={0.75} metalness={0.02} />
+                )}
               </mesh>
             </group>
           ))}

@@ -1,26 +1,28 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { CAMERA_STOPS } from "./cameraPath.js";
+import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
+import { CAMERA_STOPS, CAMERA_STOPS_MOBILE } from "./cameraPath.js";
 
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
 
-function sampleStops(progress) {
-  if (progress <= CAMERA_STOPS[0].t) return { a: CAMERA_STOPS[0], b: CAMERA_STOPS[0], localT: 0 };
-  for (let i = 0; i < CAMERA_STOPS.length - 1; i += 1) {
-    const a = CAMERA_STOPS[i];
-    const b = CAMERA_STOPS[i + 1];
+function sampleStops(stops, progress) {
+  if (progress <= stops[0].t) return { a: stops[0], b: stops[0], localT: 0 };
+  for (let i = 0; i < stops.length - 1; i += 1) {
+    const a = stops[i];
+    const b = stops[i + 1];
     if (progress >= a.t && progress <= b.t) {
       const localT = (progress - a.t) / (b.t - a.t || 1);
       return { a, b, localT };
     }
   }
-  const last = CAMERA_STOPS[CAMERA_STOPS.length - 1];
+  const last = stops[stops.length - 1];
   return { a: last, b: last, localT: 0 };
 }
 
 const tmpLook = new THREE.Vector3();
+const tmpPos = new THREE.Vector3();
 
 function widenFovForNarrowAspect(fov, aspect) {
   if (aspect >= 1) return fov;
@@ -30,10 +32,12 @@ function widenFovForNarrowAspect(fov, aspect) {
 
 export default function CameraRig({ progressRef, reducedMotion }) {
   const { camera } = useThree();
+  const isMobile = useIsMobileViewport();
+  const stops = isMobile ? CAMERA_STOPS_MOBILE : CAMERA_STOPS;
 
   useFrame(() => {
     const progress = reducedMotion ? 0 : progressRef.current;
-    const { a, b, localT } = sampleStops(progress);
+    const { a, b, localT } = sampleStops(stops, progress);
 
     const posX = lerp(a.pos[0], b.pos[0], localT);
     const posY = lerp(a.pos[1], b.pos[1], localT);
@@ -43,7 +47,8 @@ export default function CameraRig({ progressRef, reducedMotion }) {
     const lookZ = lerp(a.look[2], b.look[2], localT);
     const fov = widenFovForNarrowAspect(lerp(a.fov, b.fov, localT), camera.aspect);
 
-    camera.position.lerp(new THREE.Vector3(posX, posY, posZ), 0.12);
+    tmpPos.set(posX, posY, posZ);
+    camera.position.lerp(tmpPos, 0.12);
     tmpLook.set(lookX, lookY, lookZ);
     camera.lookAt(tmpLook);
 
