@@ -4,6 +4,8 @@ import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { SITE_CONFIG } from "../../config/siteConfig";
 import "./MirrorScene.scss";
 
+const [TITLE_NAME, TITLE_NUMERAL] = SITE_CONFIG.title.split(" @ ");
+
 export default function MirrorScene() {
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
@@ -41,7 +43,15 @@ export default function MirrorScene() {
     <section className="mirror-scene" ref={sectionRef} aria-label="Approaching the mirror">
       <div className="mirror-scene__content" ref={titleRef}>
         <p className="section-kicker">{SITE_CONFIG.tagline}</p>
-        <h1 className="mirror-scene__heading">{SITE_CONFIG.title}</h1>
+        <h1 className="mirror-scene__heading">
+          <span className="mirror-scene__heading-name">{TITLE_NAME}</span>
+          {TITLE_NUMERAL && (
+            <>
+              <span className="mirror-scene__heading-at">@</span>
+              <span className="mirror-scene__heading-numeral">{TITLE_NUMERAL}</span>
+            </>
+          )}
+        </h1>
       </div>
 
       <div className="mirror-scene__scroll-cue" aria-hidden="true">

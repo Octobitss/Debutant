@@ -17,13 +17,46 @@
 
 .mirror-scene__heading {
   margin-top: 0.4em;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.2em;
+}
+
+.mirror-scene__heading-name {
   font-family: "Great Vibes", $font-display;
   font-style: normal;
   font-weight: 400;
-  font-size: clamp(3.6rem, 11vw, 7.5rem);
+  font-size: clamp(2.6rem, 8vw, 5.6rem);
   line-height: 1.3;
   letter-spacing: 0.01em;
+  white-space: nowrap;
   background: linear-gradient(135deg, $color-dark-deep 10%, $color-dark 55%, $color-primary-dark 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 30px rgba(#fff, 0.3);
+}
+
+.mirror-scene__heading-at {
+  font-family: $font-display;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.2rem, 3.4vw, 2.2rem);
+  color: rgba($color-dark, 0.55);
+}
+
+.mirror-scene__heading-numeral {
+  font-family: $font-display;
+  font-style: normal;
+  font-weight: 600;
+  font-size: clamp(1.9rem, 5.8vw, 3.8rem);
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  background: linear-gradient(135deg, $color-gold 10%, $color-primary-dark 55%, $color-gold-soft 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

@@ -33,6 +33,11 @@ export default function DressCodeScene() {
         <p className="section-kicker">What to Wear</p>
         <h2 className="section-title">Dress Code</h2>
         <p>Dress in the palette of the garden — dusty rose, orchid mauve, and deep plum.</p>
+        <img
+          className="dresscode-scene__palette"
+          src="/assets/images/color-palette.webp"
+          alt="Dress code color palette"
+        />
       </div>
 
       <div className="dresscode-scene__grid">
