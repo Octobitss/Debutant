@@ -7,7 +7,7 @@ const OCEAN_URL = "/assets/3d/ocean-decimated.obj";
 const SCALE_X = 1.3;
 const SCALE_Y = 0.16;
 
-export default function OceanFloor({ nearZ = 6, farZ = -66, y = -2 }) {
+export default function OceanFloor({ nearZ = 6, farZ = -100, y = -2 }) {
   const obj = useLoader(OBJLoader, OCEAN_URL);
 
   const { geometry, nativeSizeZ } = useMemo(() => {

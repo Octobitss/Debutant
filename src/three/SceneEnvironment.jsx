@@ -8,6 +8,7 @@ import PhotoPlane from "./PhotoPlane.jsx";
 import OceanFloor from "./OceanFloor.jsx";
 import WaterLilyScatter from "./WaterLilyScatter.jsx";
 import DebutanteGallery from "./DebutanteGallery.jsx";
+import ObjPillar from "./ObjPillar.jsx";
 import Pillars from "./Pillars.jsx";
 import CloudField from "./CloudField.jsx";
 import OldTree from "./OldTree.jsx";
@@ -16,14 +17,15 @@ import { DEPTHS } from "./cameraPath.js";
 
 const FOG_STOPS = [
   { t: 0, color: "#a08a9c" },
-  { t: 0.11, color: "#ab97a5" },
-  { t: 0.145, color: "#f4e6da" },
-  { t: 0.19, color: "#b6a0b0" },
-  { t: 0.35, color: "#a3b09e" },
-  { t: 0.55, color: "#ac9aa7" },
-  { t: 0.75, color: "#b3a0ac" },
+  { t: 0.08, color: "#ab97a5" },
+  { t: 0.13, color: "#f4e6da" },
+  { t: 0.18, color: "#b6a0b0" },
+  { t: 0.3, color: "#a3b09e" },
+  { t: 0.45, color: "#ac9aa7" },
+  { t: 0.65, color: "#a89aa0" },
+  { t: 0.79, color: "#b3a0ac" },
   { t: 1, color: "#8f7d8b" }
-]; 
+];
 
 function sampleColor(progress, target) {
   if (progress <= FOG_STOPS[0].t) return target.set(FOG_STOPS[0].color);
@@ -83,10 +85,11 @@ function SceneContents({ progressRef, reducedMotion }) {
       <Suspense fallback={null}>
         <MirrorModel
           position={[0, 0, DEPTHS.mirror]}
+          scale={0.85}
           progressRef={progressRef}
           computeState={(p) => {
-            const distortion = Math.sin(THREE.MathUtils.clamp((p - 0.14) / 0.1, 0, 1) * Math.PI);
-            const opacity = 1 - THREE.MathUtils.smoothstep(p, 0.2, 0.28);
+            const distortion = Math.sin(THREE.MathUtils.clamp((p - 0.09) / 0.05, 0, 1) * Math.PI);
+            const opacity = 1 - THREE.MathUtils.smoothstep(p, 0.11, 0.16);
             return { distortion, opacity };
           }}
         />
@@ -97,58 +100,50 @@ function SceneContents({ progressRef, reducedMotion }) {
           progressRef={progressRef}
           computeState={(p) => ({
             distortion: 0,
-            opacity: THREE.MathUtils.smoothstep(p, 0.84, 0.94) * 0.5
+            opacity: THREE.MathUtils.smoothstep(p, 0.9, 0.97) * 0.5
           })}
         />
 
         {!reducedMotion && (
           <DeferredMount>
             <OceanFloor />
-            <WaterLilyScatter zStart={DEPTHS.gardenStart + 8} zEnd={-58} />
+            <WaterLilyScatter zStart={DEPTHS.gardenStart + 8} zEnd={-72} />
             <Pillars />
             <OldTree />
             <CloudField />
             <FallingLilies />
           </DeferredMount>
         )}
-        <DebutanteGallery progressRef={progressRef} />
+        <DebutanteGallery />
 
+        <ObjPillar x={-1.8} z={DEPTHS.venue[0]} topY={0.2 - 0.6 - 0.2} minScale={1.72} />
         <PhotoPlane
           textureUrl="/assets/images/venue-1.webp"
           position={[-1.8, 0.2, DEPTHS.venue[0]]}
           rotation={[0, 0.25, 0]}
           size={[1.8, 1.2]}
-          progressRef={progressRef}
-          peak={0.44}
-          fadeWidth={0.16}
         />
+        <ObjPillar x={1.8} z={DEPTHS.venue[1]} topY={-0.3 - 0.6 - 0.2} minScale={1.72} />
         <PhotoPlane
           textureUrl="/assets/images/venue-2.webp"
           position={[1.8, -0.3, DEPTHS.venue[1]]}
           rotation={[0, -0.25, 0]}
           size={[1.8, 1.2]}
-          progressRef={progressRef}
-          peak={0.51}
-          fadeWidth={0.16}
         />
 
+        <ObjPillar x={-1.8} z={DEPTHS.dresscode[0]} topY={-1 - 0.2} minScale={1.42} />
         <PhotoPlane
           textureUrl="/assets/images/dresscode-women.webp"
           position={[-1.8, 0, DEPTHS.dresscode[0]]}
           rotation={[0, 0.3, 0]}
           size={[1.125, 2]}
-          progressRef={progressRef}
-          peak={0.6}
-          fadeWidth={0.14}
         />
+        <ObjPillar x={1.8} z={DEPTHS.dresscode[1]} topY={-1 - 0.2} minScale={1.42} />
         <PhotoPlane
           textureUrl="/assets/images/dresscode-men.webp"
           position={[1.8, 0, DEPTHS.dresscode[1]]}
           rotation={[0, -0.3, 0]}
           size={[1.125, 2]}
-          progressRef={progressRef}
-          peak={0.66}
-          fadeWidth={0.14}
         />
       </Suspense>
     </>

@@ -28,8 +28,133 @@ export const SITE_CONFIG = {
 
   dressCode: {
     women: "Long or midi gowns in blush, mauve or plum tones",
-    men: "Formal suit or barong in charcoal, plum or muted rose"
+    men: "Formal suit or barong in charcoal, plum or muted rose",
+    note: "Bring a swim wear (Just in Case)"
   },
+
+  entourage: [
+    {
+      key: "wishes",
+      title: "18 Wishes",
+      names: [
+        "Ariana Mattina de Leon",
+        "Annika Isaga",
+        "Juliana Palmes",
+        "Faith Cerenado",
+        "Armeya Medel",
+        "Princess Lamban",
+        "Jessica Enriquez",
+        "Jezellene Austria",
+        "Marichu de Leon",
+        "Aerith Madison Jandoc",
+        "Victoria Angela Robes",
+        "Andrea Lisette David",
+        "Jean Claire Dela Cruz",
+        "Rosita Caballero",
+        "Luz Sarroca",
+        "Ana Parada",
+        "Tammy Caballero",
+        "Theresa Caballero"
+      ]
+    },
+    {
+      key: "blooms",
+      title: "18 Blooms",
+      names: [
+        "Alvin Nathaniel Legaspi",
+        "Renz Ramos",
+        "Renjiro Villaco",
+        "Jarred Gayod",
+        "Gene Melchor",
+        "John Noel Lomeda",
+        "Arjey Titus Ramos",
+        "Gian Ezekiel Mandac",
+        "Rodrigo Cruz",
+        "Maceph Bernardo",
+        "Frankie Caballero",
+        "Keanu Caballero",
+        "Kobe Bryant Caballero",
+        "Kevin Caballero",
+        "Kym Justine Ocampo",
+        "Thom Caballero",
+        "Dwayne Yambao",
+        "Frederick Caballero"
+      ]
+    },
+    {
+      key: "blessings",
+      title: "18 Blessings",
+      names: [
+        "Ninang Mayor Menchie Abalos",
+        "Ninong Arnie de Leon",
+        "Ninang Menchie Mandac",
+        "Ninong Jerry Francisco",
+        "Dra. Analisa Alvarez",
+        "Arnel Cruz",
+        "Ninong William de Leon",
+        "Ninang Wendy & Ninang Kate",
+        "Ninong Konsi Dong Ocampo",
+        "Ninong Jonas Lagmay",
+        "Ninang Geraldine Aquino",
+        "Ninong Rodney Palaginog",
+        "Ninang Kitchie Ridon",
+        "Tito Ryan Sarroca",
+        "Ninang May Lazo",
+        "Ninong Roel Conde",
+        "Ninang Ysa Andres",
+        "Ninong Jonjon Torres"
+      ]
+    },
+    {
+      key: "shots",
+      title: "18 Shots",
+      subtitle: "Men",
+      names: [
+        "Kelvin Christian Frane",
+        "Alex Gumaya",
+        "Bright Lazaro",
+        "RK Espinosa",
+        "Ian Pestano",
+        "Icko Sunico",
+        "Ken Sato",
+        "Justin Gregorio",
+        "Rem Ferriol",
+        "Joel Gayod",
+        "D'Onre Nacua",
+        "Jacob Perez",
+        "Sydd Barasi",
+        "River Gatchalian",
+        "Jayson Vallo",
+        "Norman Pamittan",
+        "Christian Francisco",
+        "Angelo Pablo"
+      ]
+    },
+    {
+      key: "treasures",
+      title: "18 Treasures",
+      names: [
+        "Carlo Isagan & Erica Isagan",
+        "Jiyan Rose Sarroca",
+        "Aereen Caranzo",
+        "Cheni Rodriguez",
+        "Abeguel Ambol",
+        "Rommel Fisher",
+        "Joseph Bellen",
+        "Carla Abellana",
+        "Vinnica Aragdon",
+        "Gerald Gojo Cruz",
+        "Cindy Ilagan",
+        "Mechelle Hayagan",
+        "Nami Labucay",
+        "Kevin Lasala",
+        "Ryan Jose Bongat",
+        "Ram Ferriol",
+        "Nova Andaya",
+        "Louie Garcia"
+      ]
+    }
+  ],
 
   letter: [
     "Step into my whimsical garden, a little world filled with blooming flowers, cherished memories, and eighteen beautiful chapters that have shaped who I am today.",

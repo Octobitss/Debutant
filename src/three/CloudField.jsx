@@ -69,7 +69,7 @@ function CloudVariant({ geometry, normalize, zStart, zEnd, seed }) {
   );
 }
 
-export default function CloudField({ zStart = 4, zEnd = -58 }) {
+export default function CloudField({ zStart = 4, zEnd = -72 }) {
   const variants = useVariantGeometries();
 
   if (!variants.length) return null;

@@ -38,7 +38,7 @@ function useCapitalGeometry() {
   }, [obj]);
 }
 
-export default function Pillars({ nearZ = 4, farZ = -56, spacing = 11, groundY = -1.5 }) {
+export default function Pillars({ nearZ = 4, farZ = -62, spacing = 11, groundY = -1.5 }) {
   const capitalGeometry = useCapitalGeometry();
   const shaftGeometry = useMemo(() => createFlutedShaftGeometry(SHAFT_RADIUS, SHAFT_HEIGHT), []);
 

@@ -62,8 +62,14 @@ export default function OldTree({ groundY = -2.7 }) {
       { position: [10.5, groundY, -14], scale: 1.15, rotationY: 2.6 },
       { position: [-10.5, groundY, -25], scale: 1.1, rotationY: 1.1 },
       { position: [10.5, groundY, -25], scale: 1.2, rotationY: -1.4 },
+      { position: [-10.5, groundY, -30], scale: 1.12, rotationY: 1.5 },
+      { position: [10.5, groundY, -30], scale: 1.08, rotationY: -0.3 },
       { position: [-10.5, groundY, -36], scale: 1.05, rotationY: -1.8 },
-      { position: [10.5, groundY, -36], scale: 1.1, rotationY: 0.7 }
+      { position: [10.5, groundY, -36], scale: 1.1, rotationY: 0.7 },
+      { position: [-10.5, groundY, -47], scale: 1.15, rotationY: 2.4 },
+      { position: [10.5, groundY, -47], scale: 1.1, rotationY: -1.9 },
+      { position: [-10.5, groundY, -58], scale: 1.05, rotationY: 0.6 },
+      { position: [10.5, groundY, -58], scale: 1.12, rotationY: -2.7 }
     ],
     [groundY]
   );

@@ -48,6 +48,8 @@ export default function DressCodeScene() {
           <p className="dresscode-note__copy">{SITE_CONFIG.dressCode.men}</p>
         </div>
       </div>
+
+      <p className="dresscode-scene__extra-note">{SITE_CONFIG.dressCode.note}</p>
     </section>
   );
 }

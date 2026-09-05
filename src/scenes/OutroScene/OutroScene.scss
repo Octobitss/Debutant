@@ -43,3 +43,22 @@
   text-transform: uppercase;
   color: rgba($color-dark-deep, 0.55);
 }
+
+.outro-scene__credit {
+  margin-top: $space-xs;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: rgba($color-dark-deep, 0.4);
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover,
+    &:focus-visible {
+      color: rgba($color-dark-deep, 0.7);
+    }
+  }
+}

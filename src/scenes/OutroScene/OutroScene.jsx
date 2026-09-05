@@ -48,6 +48,12 @@ export default function OutroScene() {
         <p>
           {SITE_CONFIG.title} &middot; {SITE_CONFIG.tagline}
         </p>
+        <p className="outro-scene__credit">
+          Made by{" "}
+          <a href="https://opnexus.tech" target="_blank" rel="noopener noreferrer">
+            opnexus.tech
+          </a>
+        </p>
       </footer>
     </section>
   );

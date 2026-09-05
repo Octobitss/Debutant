@@ -54,6 +54,17 @@
   color: $text-on-light-card-muted;
 }
 
+.dresscode-scene__extra-note {
+  max-width: 480px;
+  margin: $space-lg auto 0;
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $color-secondary-light;
+  text-shadow: 0 2px 20px rgba(#000, 0.6);
+}
+
 @media (max-width: $bp-tablet) {
   .dresscode-scene__grid {
     grid-template-columns: 1fr;
