@@ -29,7 +29,8 @@ export const SITE_CONFIG = {
   dressCode: {
     women: "Long or midi gowns in blush, mauve or plum tones",
     men: "Formal suit or barong in charcoal, plum or muted rose",
-    note: "Bring a swim wear (Just in Case)"
+    note: "Bring a swim wear (Just in Case)",
+    warning: "No Color Pink or any other colors in Pink in Dresses, Shirts, Pants or Shorts. EVEN PANTIES AND BRIEFS WILL BE KICKED OUT"
   },
 
   entourage: [

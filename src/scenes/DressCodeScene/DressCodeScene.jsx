@@ -55,6 +55,7 @@ export default function DressCodeScene() {
       </div>
 
       <p className="dresscode-scene__extra-note">{SITE_CONFIG.dressCode.note}</p>
+      <p className="dresscode-scene__extra-note">{SITE_CONFIG.dressCode.warning}</p>
     </section>
   );
 }

@@ -42,7 +42,7 @@ export default function GardenScene() {
             {paragraph}
           </p>
         ))}
-        <p
+        {/* <p
           className="garden-scene__signoff"
           ref={(el) => {
             paragraphRefs.current[SITE_CONFIG.letter.length] = el;
@@ -51,7 +51,7 @@ export default function GardenScene() {
           With love,
           <br />
           {SITE_CONFIG.debutantName}
-        </p>
+        </p> */}
       </div>
     </section>
   );
