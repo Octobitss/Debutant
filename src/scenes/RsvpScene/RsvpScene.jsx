@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { revealOnScroll } from "../../animations/scrollReveal";
 import { gsap } from "../../animations/gsap";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { SITE_CONFIG } from "../../config/siteConfig";
@@ -13,20 +14,11 @@ export default function RsvpScene() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (reducedMotion) {
-        gsap.set(dateRef.current, { opacity: 1, scale: 1 });
+        gsap.set(dateRef.current, { opacity: 1, y: 0 });
         return;
       }
 
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: dateRef.current, start: "top 80%", end: "top -20%", scrub: 1 }
-      });
-      tl.fromTo(
-        dateRef.current,
-        { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, ease: "back.out(1.3)", duration: 0.3 }
-      )
-        .to(dateRef.current, { opacity: 1, scale: 1, duration: 0.3 })
-        .to(dateRef.current, { opacity: 0, ease: "power1.in", duration: 0.4 });
+      revealOnScroll(dateRef.current);
     }, sectionRef);
 
     return () => ctx.revert();

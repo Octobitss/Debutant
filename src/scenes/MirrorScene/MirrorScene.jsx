@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
+import { revealOnScroll } from "../../animations/scrollReveal";
 import { gsap } from "../../animations/gsap";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
-import { useIsMobileViewport } from "../../hooks/useIsMobileViewport";
 import { SITE_CONFIG } from "../../config/siteConfig";
 import "./MirrorScene.scss";
 
@@ -11,7 +11,6 @@ export default function MirrorScene() {
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
-  const isMobile = useIsMobileViewport();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -20,34 +19,11 @@ export default function MirrorScene() {
         return;
       }
 
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, ease: "power2.out", duration: 1.2, delay: 0.3 }
-      );
-
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 1, y: 0 },
-        {
-          opacity: 0,
-          y: -40,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            // Mobile-only: fade out over a short, viewport-relative distance so the caption
-            // clears the frame before the camera dollies into the mirror. Desktop keeps the
-            // original section-relative fade.
-            end: isMobile ? () => `+=${Math.round(window.innerHeight * 0.35)}` : "40% top",
-            scrub: 1
-          }
-        }
-      );
+      revealOnScroll(titleRef.current);
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [reducedMotion, isMobile]);
+  }, [reducedMotion]);
 
   return (
     <section className="mirror-scene" ref={sectionRef} aria-label="Approaching the mirror">

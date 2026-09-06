@@ -27,5 +27,6 @@ export const MIRROR_FRAGMENT_SHADER = `
     }
     vec4 tex = texture2D(uMap, uv);
     gl_FragColor = vec4(tex.rgb, tex.a * uOpacity);
+    #include <colorspace_fragment>
   }
 `;

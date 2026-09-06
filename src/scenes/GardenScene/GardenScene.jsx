@@ -19,9 +19,8 @@ export default function GardenScene() {
         return;
       }
 
-      paragraphs.forEach((el, index) => {
-        const isLast = index === paragraphs.length - 1;
-        revealOnScroll(el, { y: 30, fadeOut: !isLast });
+      paragraphs.forEach((el) => {
+        revealOnScroll(el);
       });
     }, sectionRef);
 

@@ -36,6 +36,7 @@ export default function MirrorMesh({ position = [0, 0, 0], rotation = [0, 0, 0],
         uniforms={uniforms}
         vertexShader={MIRROR_VERTEX_SHADER}
         fragmentShader={MIRROR_FRAGMENT_SHADER}
+        toneMapped={false}
         transparent
         side={THREE.DoubleSide}
       />

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { revealOnScroll } from "../../animations/scrollReveal";
 import { gsap } from "../../animations/gsap";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { SITE_CONFIG } from "../../config/siteConfig";
@@ -16,16 +17,7 @@ export default function OutroScene() {
         return;
       }
 
-      gsap.fromTo(
-        messageRef.current,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          ease: "power2.out",
-          scrollTrigger: { trigger: messageRef.current, start: "top 85%", end: "top 55%", scrub: 1 }
-        }
-      );
+      revealOnScroll(messageRef.current);
     }, sectionRef);
 
     return () => ctx.revert();

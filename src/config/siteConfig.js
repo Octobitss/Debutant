@@ -36,15 +36,16 @@ export const SITE_CONFIG = {
     {
       key: "wishes",
       title: "18 Wishes",
+      subtitle: "Strictly hand-written",
       names: [
         "Ariana Mattina de Leon",
-        "Annika Isaga",
+        "Krisha Ann Sanga",
         "Juliana Palmes",
         "Faith Cerenado",
         "Armeya Medel",
-        "Princess Lamban",
+        "Annika Isaga",
         "Jessica Enriquez",
-        "Jezellene Austria",
+        "Jez Austria",
         "Marichu de Leon",
         "Aerith Madison Jandoc",
         "Victoria Angela Robes",
@@ -128,6 +129,31 @@ export const SITE_CONFIG = {
         "Norman Pamittan",
         "Christian Francisco",
         "Angelo Pablo"
+      ]
+    },
+    {
+      key: "shots-women",
+      title: "18 Shots",
+      subtitle: "Women",
+      names: [
+        "Chloe Angeles",
+        "Princess Lamban",
+        "Bianca Kierulf",
+        "Trixie Valenzuela",
+        "Euan Lo",
+        "Ana Rahayu",
+        "Jillian Nicia Lim",
+        "Sofia Giordana",
+        "Bettina Mari Cayanan",
+        "Ashley Delos Santos",
+        "Jahnella Gregorio",
+        "Alex Lagmay",
+        "Gicelle Paluyo",
+        "Alexine Lau",
+        "Sophia Cabahug",
+        "Maui Garcia",
+        "Precious Yuna Lomeda",
+        "Martina Tablazon"
       ]
     },
     {

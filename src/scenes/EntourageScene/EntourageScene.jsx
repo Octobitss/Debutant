@@ -21,8 +21,8 @@ export default function EntourageScene() {
       }
 
       revealOnScroll(headerRef.current);
-      groups.forEach((el, index) => {
-        revealOnScroll(el, { x: index % 2 === 0 ? -50 : 50, fadeOut: false });
+      groups.forEach((el) => {
+        revealOnScroll(el);
       });
     }, sectionRef);
 

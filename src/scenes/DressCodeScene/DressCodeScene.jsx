@@ -20,8 +20,8 @@ export default function DressCodeScene() {
       }
 
       revealOnScroll(headerRef.current);
-      revealOnScroll(womenRef.current, { x: -60 });
-      revealOnScroll(menRef.current, { x: 60 });
+      revealOnScroll(womenRef.current);
+      revealOnScroll(menRef.current);
     }, sectionRef);
 
     return () => ctx.revert();

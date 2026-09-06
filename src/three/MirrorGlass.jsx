@@ -56,6 +56,7 @@ export default function MirrorGlass({ progressRef, computeState, diameter = 2.9 
           uniforms={uniforms}
           vertexShader={MIRROR_VERTEX_SHADER}
           fragmentShader={MIRROR_FRAGMENT_SHADER}
+          toneMapped={false}
           transparent
           side={THREE.DoubleSide}
         />
