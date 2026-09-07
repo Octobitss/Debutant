@@ -37,7 +37,7 @@ export const SITE_CONFIG = {
     {
       key: "wishes",
       title: "18 Wishes",
-      subtitle: "Strictly hand-written",
+      // subtitle: "Strictly hand-written",
       names: [
         "Ariana Mattina de Leon",
         "Krisha Ann Sanga",

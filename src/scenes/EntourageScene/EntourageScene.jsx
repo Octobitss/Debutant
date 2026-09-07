@@ -48,7 +48,7 @@ export default function EntourageScene() {
           >
             <p className="entourage-group__label">
               {group.title}
-              {group.subtitle ? <span className="entourage-group__subtitle"> </span> : null}
+              {group.subtitle ? <span className="entourage-group__subtitle"> &middot; {group.subtitle}</span> : null}
             </p>
             <ol className="entourage-group__list">
               {group.names.map((name) => (
