@@ -31,10 +31,12 @@ export default function VenueScene() {
       <div className="venue-scene__header" ref={headerRef}>
         <p className="section-kicker">The Venue</p>
         <h2 className="section-title">{SITE_CONFIG.venue.name}</h2>
-        <p>{SITE_CONFIG.venue.address}</p>
+        <div className="venue-scene__meta-wrapper">
+                  <p>{SITE_CONFIG.venue.address}</p>
         <p className="venue-scene__meta">
           {SITE_CONFIG.event.displayDate} &middot; {SITE_CONFIG.event.displayTime}
         </p>
+        </div>
       </div>
 
       <div className="venue-scene__spacer" aria-hidden="true" />
