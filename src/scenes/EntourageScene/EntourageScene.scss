@@ -26,8 +26,22 @@
 
 .entourage-scene__header p {
   margin-top: $space-xs;
-  color: $text-on-dark-muted;
+  color: $color-blush;
   text-shadow: 0 2px 20px rgba(#000, 0.6);
+}
+
+.entourage-scene__header p:not(.section-kicker) {
+  width: fit-content;
+  margin: $space-sm auto 0;
+  padding: 0.85rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid rgba($color-champagne, 0.2);
+  background: rgba($color-dark-deep, 0.8);
+  color: $color-cream;
+  font-weight: 500;
+  line-height: 1.6;
+  text-wrap: balance;
+  text-shadow: 0 1px 3px rgba(#000, 0.5);
 }
 
 .entourage-scene__groups {
@@ -69,6 +83,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.9rem clamp(1rem, 3vw, 2.5rem);
   counter-reset: entourage-counter;
+  padding: 0;
 }
 
 .entourage-group__list li {
