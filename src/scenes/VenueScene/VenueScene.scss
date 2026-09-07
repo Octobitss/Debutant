@@ -54,6 +54,18 @@
   margin: 0 auto;
   padding: 0 1.5rem;
   text-align: center;
+
+  .section-title {
+    font-family: $font-display;
+    font-style: normal;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 5.8vw, 3.8rem);
+    line-height: 1.18;
+    letter-spacing: 0.025em;
+    text-wrap: balance;
+    color: $color-champagne;
+    text-shadow: 0 2px 4px rgba(#000, 0.75), 0 6px 20px rgba(#000, 0.45);
+  }
 }
 
 .venue-scene__map p {
@@ -61,6 +73,6 @@
 }
 
 .venue-scene__map .map-embed {
-  margin-top: $space-lg;
+  margin-top: $space-md;
   text-align: left;
 }

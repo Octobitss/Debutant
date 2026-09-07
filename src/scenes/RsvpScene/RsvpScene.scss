@@ -26,6 +26,15 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+      font-family: $font-display;
+    font-style: normal;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 5.8vw, 3.8rem);
+    line-height: 1.18;
+    letter-spacing: 0.025em;
+    text-wrap: balance;
+    color: $color-champagne;
+    text-shadow: 0 2px 4px rgba(#000, 0.75), 0 6px 20px rgba(#000, 0.45);
 }
 
 .rsvp-scene__time {
@@ -38,7 +47,15 @@
 
 .rsvp-scene__title {
   margin-top: $space-xl;
-  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+    font-family: $font-display;
+    font-style: normal;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 5.8vw, 3.8rem);
+    line-height: 1.18;
+    letter-spacing: 0.025em;
+    text-wrap: balance;
+    color: $color-champagne;
+    text-shadow: 0 2px 4px rgba(#000, 0.75), 0 6px 20px rgba(#000, 0.45);
 }
 
 .rsvp-scene__copy {

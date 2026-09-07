@@ -21,10 +21,15 @@
 }
 
 .outro-scene__thanks {
-  font-family: $font-display;
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  color: $color-dark-deep;
-  text-shadow: 0 2px 24px rgba(#fff, 0.35);
+    font-family: $font-display;
+    font-style: normal;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 5.8vw, 3.8rem);
+    line-height: 1.18;
+    letter-spacing: 0.025em;
+    text-wrap: balance;
+    color: $color-champagne;
+    text-shadow: 0 2px 4px rgba(#000, 0.75), 0 6px 20px rgba(#000, 0.45);
 }
 
 .outro-scene__signoff {
