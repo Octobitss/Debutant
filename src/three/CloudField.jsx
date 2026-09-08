@@ -3,11 +3,11 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
-import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
+import { useMobilePerformance } from "../hooks/useIsMobileViewport.js";
 
 const CLOUDS_URL = "/assets/3d/LOW-POLY CLOUDS.obj";
 const INSTANCES_PER_VARIANT = 11;
-const INSTANCES_PER_VARIANT_MOBILE = 6;
+const INSTANCES_PER_VARIANT_MOBILE = 2;
 const TARGET_SIZE = 5;
 
 function useVariantGeometries() {
@@ -35,6 +35,7 @@ function useVariantGeometries() {
 function CloudVariant({ geometry, normalize, zStart, zEnd, seed, instanceCount, isMobile }) {
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
+  const initializedInstances = useRef(null);
 
   const instances = useMemo(
     () =>
@@ -52,6 +53,8 @@ function CloudVariant({ geometry, normalize, zStart, zEnd, seed, instanceCount, 
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
+    if (isMobile && initializedInstances.current === instances) return;
+    initializedInstances.current = instances;
     const t = clock.elapsedTime;
     instances.forEach((inst, i) => {
       const drift = Math.sin(t * inst.drift + inst.phase) * 2;
@@ -78,7 +81,7 @@ function CloudVariant({ geometry, normalize, zStart, zEnd, seed, instanceCount, 
 
 export default function CloudField({ zStart = 4, zEnd = -72 }) {
   const variants = useVariantGeometries();
-  const isMobile = useIsMobileViewport();
+  const isMobile = useMobilePerformance();
   const instanceCount = isMobile ? INSTANCES_PER_VARIANT_MOBILE : INSTANCES_PER_VARIANT;
 
   if (!variants.length) return null;

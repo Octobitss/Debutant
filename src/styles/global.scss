@@ -109,6 +109,24 @@ main {
   position: relative;
   z-index: $z-content;
 }
+
+// Avoid repeatedly blurring the animated canvas underneath mobile cards.
+@media (max-width: 768px), (pointer: coarse) {
+  #root :is(
+    .fixed-countdown,
+    .sound-toggle,
+    .music-player:not(.music-player--collapsed),
+    .map-embed__side,
+    .venue-scene__meta-wrapper,
+    .entourage-group,
+    .dresscode-note,
+    .garden-scene__paragraph,
+    .garden-scene__signoff
+  ) {
+    backdrop-filter: none;
+    background: rgba($color-dark-deep, 0.88);
+  }
+}
 /* watch-test-marker-2 */
 /* watch-test-marker-3 */
 /* watch-test-marker-4 */

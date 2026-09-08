@@ -2,7 +2,7 @@ import { useLoader } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
-import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
+import { useMobilePerformance } from "../hooks/useIsMobileViewport.js";
 
 const TREE_URL = "/assets/3d/old-tree-decimated.obj";
 
@@ -92,11 +92,11 @@ const ALL_PLACEMENTS = [
 ];
 
 export default function OldTree({ groundY = -2.7 }) {
-  const isMobile = useIsMobileViewport();
+  const isMobile = useMobilePerformance();
   const parts = useTreeParts(isMobile);
 
   const placements = useMemo(() => {
-    const pairs = isMobile ? ALL_PLACEMENTS.filter((_, i) => i % 2 === 0) : ALL_PLACEMENTS;
+    const pairs = isMobile ? ALL_PLACEMENTS.filter((_, i) => i % 4 === 0) : ALL_PLACEMENTS;
     return pairs
       .flat()
       .map(({ x, z, scale, rotationY }) => ({ position: [x, groundY, z], scale, rotationY }));

@@ -2,11 +2,11 @@ import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
-import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
+import { useMobilePerformance } from "../hooks/useIsMobileViewport.js";
 
 const LILY_URL = "/assets/3d/pink_lily_flower.obj";
 const COUNT = 100;
-const COUNT_MOBILE = 55;
+const COUNT_MOBILE = 16;
 const TARGET_SIZE = 0.35;
 const X_SPREAD = 11;
 const Y_SPREAD = 14;
@@ -40,7 +40,7 @@ export default function FallingLilies() {
   const geometry = useLilyGeometry();
   const meshRef = useRef(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  const isMobile = useIsMobileViewport();
+  const isMobile = useMobilePerformance();
   const count = isMobile ? COUNT_MOBILE : COUNT;
 
   const material = useMemo(

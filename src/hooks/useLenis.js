@@ -2,13 +2,15 @@ import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "../animations/gsap";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import { useMobilePerformance } from "./useIsMobileViewport";
 
 export function useLenis() {
   const reducedMotion = usePrefersReducedMotion();
+  const isMobile = useMobilePerformance();
   const lenisRef = useRef(null);
 
   useEffect(() => {
-    if (reducedMotion) return undefined;
+    if (reducedMotion || isMobile) return undefined;
 
     const lenis = new Lenis({
       duration: 1.1,
@@ -30,7 +32,7 @@ export function useLenis() {
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, isMobile]);
 
   return lenisRef;
 }

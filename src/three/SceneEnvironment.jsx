@@ -1,7 +1,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
-import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
+import { useMobilePerformance } from "../hooks/useIsMobileViewport.js";
 import CameraRig from "./CameraRig.jsx";
 import MirrorMesh from "./MirrorMesh.jsx";
 import MirrorModel from "./MirrorModel.jsx";
@@ -26,7 +26,7 @@ const FOG_STOPS = [
   { t: 0.65, color: "#a89aa0" },
   { t: 0.79, color: "#b3a0ac" },
   { t: 1, color: "#8f7d8b" }
-];
+].map((stop) => ({ ...stop, color: new THREE.Color(stop.color) }));
 
 function sampleColor(progress, target) {
   if (progress <= FOG_STOPS[0].t) return target.set(FOG_STOPS[0].color);
@@ -35,9 +35,7 @@ function sampleColor(progress, target) {
     const b = FOG_STOPS[i + 1];
     if (progress >= a.t && progress <= b.t) {
       const localT = (progress - a.t) / (b.t - a.t || 1);
-      const ca = new THREE.Color(a.color);
-      const cb = new THREE.Color(b.color);
-      return target.copy(ca).lerp(cb, localT);
+      return target.copy(a.color).lerp(b.color, localT);
     }
   }
   return target.set(FOG_STOPS[FOG_STOPS.length - 1].color);
@@ -152,7 +150,7 @@ function SceneContents({ progressRef, reducedMotion }) {
 }
 
 export default function SceneEnvironment({ progressRef, reducedMotion }) {
-  const isMobile = useIsMobileViewport();
+  const isMobile = useMobilePerformance();
 
   if (reducedMotion) return null;
 
@@ -160,7 +158,7 @@ export default function SceneEnvironment({ progressRef, reducedMotion }) {
     <Canvas
       className="scene-environment"
       camera={{ position: [0, 0, 8], fov: 42, near: 0.1, far: 100 }}
-      dpr={isMobile ? [1, 1.3] : [1, 1.75]}
+      dpr={isMobile ? 1 : [1, 1.75]}
       gl={{ antialias: !isMobile, alpha: false, powerPreference: "high-performance" }}
     >
       <SceneContents progressRef={progressRef} reducedMotion={reducedMotion} />

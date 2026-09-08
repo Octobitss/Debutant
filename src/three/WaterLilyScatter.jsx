@@ -3,11 +3,11 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three-stdlib";
 import useFloorHeightSampler from "./useFloorHeight.js";
-import { useIsMobileViewport } from "../hooks/useIsMobileViewport.js";
+import { useMobilePerformance } from "../hooks/useIsMobileViewport.js";
 
 const LILY_URL = "/assets/3d/Water Lily.obj";
 const INSTANCE_COUNT = 720;
-const INSTANCE_COUNT_MOBILE = 360;
+const INSTANCE_COUNT_MOBILE = 96;
 const TARGET_SIZE = 0.7;
 const PAD_COLOR = "#3f6b3a";
 const BLOOM_COLOR = "#f6e3ea";
@@ -73,7 +73,7 @@ function LilyPart({ geometry, color, normalize, instances, isMobile }) {
 export default function WaterLilyScatter({ xSpread = 21, zStart = 4, zEnd = -58, surfaceLift = 0.03 }) {
   const { parts, normalize } = useLilyParts();
   const sampleFloorHeight = useFloorHeightSampler();
-  const isMobile = useIsMobileViewport();
+  const isMobile = useMobilePerformance();
   const instanceCount = isMobile ? INSTANCE_COUNT_MOBILE : INSTANCE_COUNT;
 
   const instances = useMemo(
