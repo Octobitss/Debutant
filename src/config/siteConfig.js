@@ -6,7 +6,7 @@ export const SITE_CONFIG = {
   event: {
     date: "2026-10-17T18:00:00+08:00",
     displayDate: "October 17, 2026",
-    displayTime: "6:00 in the evening"
+    displayTime: "5:00 in the evening"
   },
 
   venue: {
